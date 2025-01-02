@@ -1,0 +1,47 @@
+version: "3"
+services:
+  mysql:
+    image: mysql:8.4.3
+    container_name: ecommerce-mysql8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: aa
+      MYSQL_DATABASE: ecommerce
+      MYSQL_USER: ecommerce
+      MYSQL_PASSWORD: aa
+      TZ: UTC
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db/mysql/data:/var/lib/mysql
+      - ./db/mysql/conf.d:/etc/mysql/conf.d
+# mock server
+  openapi_builder:
+    container_name: swagger_build
+    image: jeanberu/swagger-cli
+    volumes:
+      - ./:/app
+    command: swagger-cli bundle --outfile "/app/schema.json" /app/swagger.json
+
+  openapi_mock:
+    container_name: server_mock
+    image: jormaechea/open-api-mocker
+    volumes:
+      - ./swagger.json:/app/swagger.json
+    ports:
+      - "8080:5000"
+    depends_on:
+      - openapi_builder
+
+  openapi_swagger:
+    container_name: swagger_ui
+    image: swaggerapi/swagger-ui
+    ports:
+      - "80:8080"
+    environment:
+      SWAGGER_JSON: /app/swagger.json
+      BASE_URL: /swagger
+    volumes:
+      - ./swagger.json:/app/swagger.json
+    depends_on:
+      - openapi_mock

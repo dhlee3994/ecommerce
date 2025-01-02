@@ -64,3 +64,8 @@
 - 장바구니에 등록한 상품들 중 유효한 판매 상태, 재고를 가진 상품들만 주문할 수 있다.
 
 </details>
+
+## Mock API 서버 구동
+
+1. docker-compose.yml 실행
+2. `http://localhost/swagger` 접속

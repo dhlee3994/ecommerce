@@ -64,3 +64,99 @@
 - 장바구니에 등록한 상품들 중 유효한 판매 상태, 재고를 가진 상품들만 주문할 수 있다.
 
 </details>
+
+## Mock API 서버 구동
+
+1. docker-compose.yml 실행
+2. `http://localhost/swagger` 접속
+
+
+## 프로젝트 구조
+
+<details>
+<summary>접기/펼치기</summary>
+
+```markdown
+main
+├── java
+│ └── io
+│     └── hhplus
+│         └── ecommerce
+│             ├── EcommerceApplication.java
+│             ├── cart
+│             │ ├── application
+│             │ │ ├── request
+│             │ │ └── response
+│             │ ├── domain
+│             │ ├── infra
+│             │ │ ├── request
+│             │ │ └── response
+│             │ └── presentation
+│             │     ├── request
+│             │     └── response
+│             ├── coupon
+│             │ ├── application
+│             │ │ ├── request
+│             │ │ └── response
+│             │ ├── domain
+│             │ ├── infra
+│             │ │ ├── request
+│             │ │ └── response
+│             │ └── presentation
+│             │     ├── request
+│             │     └── resonse
+│             ├── global
+│             │ ├── CommonApiResponse.java
+│             │ ├── config
+│             │ └── exception
+│             │ └── openapi
+│             ├── order
+│             │ ├── application
+│             │ │ ├── request
+│             │ │ └── response
+│             │ ├── domain
+│             │ ├── infra
+│             │ │ ├── request
+│             │ │ └── response
+│             │ └── presentation
+│             │     ├── request
+│             │     └── response
+│             ├── payment
+│             │ ├── application
+│             │ │ ├── request
+│             │ │ └── response
+│             │ ├── domain
+│             │ ├── infra
+│             │ │ ├── request
+│             │ │ └── response
+│             │ └── presentation
+│             │     ├── request
+│             │     └── response
+│             ├── point
+│             │ ├── application
+│             │ │ ├── request
+│             │ │ └── response
+│             │ ├── domain
+│             │ ├── infra
+│             │ │ ├── request
+│             │ │ └── response
+│             │ └── presentation
+│             │     ├── request
+│             │     └── response
+│             └── product
+│                 ├── application
+│                 │ ├── request
+│                 │ └── response
+│                 ├── domain
+│                 ├── infra
+│                 │ ├── request
+│                 │ └── response
+│                 └── presentation
+│                     ├── request
+│                     └── response
+└── resources
+    └── application.yml
+
+```
+
+</details>

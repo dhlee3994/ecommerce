@@ -68,7 +68,7 @@
 ## Mock API 서버 구동
 
 1. docker-compose.yml 실행
-2. `http://localhost/swagger` 접속
+2. `http://localhost:8082` 접속
 
 
 ## 프로젝트 구조

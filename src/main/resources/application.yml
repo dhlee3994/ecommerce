@@ -1,3 +1,8 @@
+logging:
+  level:
+    org.hibernate:
+      sql: debug
+      orm.jdbc.bind: trace
 spring:
   application.name: ecommerce
   datasource:
@@ -5,6 +10,20 @@ spring:
     url: jdbc:mysql://localhost:3306/ecommerce
     username: ecommerce
     password: aa
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+        max-page-size: 50
+        default-page-size: 10
 
 springdoc:
   use-fqn: true

@@ -1,15 +1,20 @@
 package io.hhplus.ecommerce.product.presentation.response;
 
+import io.hhplus.ecommerce.product.application.response.ProductResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Schema(description = "상품 단건 조회, 목록 응답")
+@Builder
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class ProductApiResponse {
 
 	@Schema(description = "상품 ID", example = "1")
-	private final long productId;
+	private final long id;
 
 	@Schema(description = "상품명", example = "상품1")
 	private final String name;
@@ -23,13 +28,13 @@ public class ProductApiResponse {
 	@Schema(description = "상품 상태", example = "판매중")
 	private final String status;
 
-	@Builder
-	private ProductApiResponse(
-		final long productId, final String name, final int price, final int quantity, final String status) {
-		this.productId = productId;
-		this.name = name;
-		this.price = price;
-		this.quantity = quantity;
-		this.status = status;
+	public static ProductApiResponse from(final ProductResponse response) {
+		return ProductApiResponse.builder()
+			.id(response.getId())
+			.name(response.getName())
+			.price(response.getPrice())
+			.quantity(response.getQuantity())
+			.status(response.getStatus())
+			.build();
 	}
 }

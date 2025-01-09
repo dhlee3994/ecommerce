@@ -1,10 +1,15 @@
 package io.hhplus.ecommerce.product.presentation.response;
 
+import io.hhplus.ecommerce.product.application.response.BestProductResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Schema(description = "베스트 상품 응답")
+@Builder
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class BestProductApiResponse {
 
@@ -15,17 +20,13 @@ public class BestProductApiResponse {
 	private final String name;
 
 	@Schema(description = "총 판매량", example = "100")
-	private final int totalSales;
+	private final long totalSaleCount;
 
-	@Schema(description = "총 판매 금액", example = "1000000")
-	private final int totalAmount;
-
-	@Builder
-	private BestProductApiResponse(
-		final Long productId, final String name, final int totalSales, final int totalAmount) {
-		this.productId = productId;
-		this.name = name;
-		this.totalSales = totalSales;
-		this.totalAmount = totalAmount;
+	public static BestProductApiResponse from(final BestProductResponse bestProductResponse) {
+		return BestProductApiResponse.builder()
+			.productId(bestProductResponse.getProductId())
+			.name(bestProductResponse.getName())
+			.totalSaleCount(bestProductResponse.getTotalSaleCount())
+			.build();
 	}
 }

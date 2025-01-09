@@ -16,4 +16,6 @@ public interface ProductRepository {
 	Optional<Product> findById(long id);
 
 	List<Product> getAllById(List<Long> productIds);
+
+	List<BestProduct> getBestProducts(LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable);
 }

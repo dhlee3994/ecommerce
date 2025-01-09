@@ -35,4 +35,13 @@ public class ProductRepositoryImpl implements ProductRepository {
 	public List<Product> getAllById(final List<Long> productIds) {
 		return productJpaRepository.findAllById(productIds);
 	}
+
+	@Override
+	public List<BestProduct> getBestProducts(
+		final LocalDateTime startDateTime,
+		final LocalDateTime endDateTime,
+		final Pageable pageable
+	) {
+		return productJpaRepository.getBestProducts(startDateTime, endDateTime, pageable);
+	}
 }

@@ -226,4 +226,41 @@ class ProductApplicationServiceUnitTest {
 		}
 	}
 
+	@DisplayName("인기 상품 조회")
+	@Nested
+	class getBestProducts {
+		@DisplayName("판매량이 가장 많은 상품 5개를 조회할 수 있다.")
+		@Test
+		void getBestProducts() {
+			// given
+			List<BestProduct> bestProducts = List.of(
+				BestProduct.builder().productId(1L).name("상품1").totalSaleCount(10L).build(),
+				BestProduct.builder().productId(2L).name("상품2").totalSaleCount(20L).build(),
+				BestProduct.builder().productId(3L).name("상품3").totalSaleCount(30L).build(),
+				BestProduct.builder().productId(4L).name("상품4").totalSaleCount(40L).build(),
+				BestProduct.builder().productId(5L).name("상품5").totalSaleCount(50L).build()
+			);
+
+			given(productRepository.getBestProducts(
+				any(LocalDateTime.class),
+				any(LocalDateTime.class),
+				any(Pageable.class)
+			))
+				.willReturn(bestProducts);
+
+			// when
+			final List<BestProductResponse> result = productApplicationService.getBestProducts();
+
+			// then
+			assertThat(result).hasSize(5)
+				.extracting("name", "totalSaleCount")
+				.containsExactly(
+					tuple("상품1", 10L),
+					tuple("상품2", 20L),
+					tuple("상품3", 30L),
+					tuple("상품4", 40L),
+					tuple("상품5", 50L)
+				);
+		}
+	}
 }

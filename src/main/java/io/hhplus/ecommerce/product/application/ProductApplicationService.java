@@ -40,4 +40,16 @@ public class ProductApplicationService {
 
 		return ProductResponse.from(product);
 	}
+
+	public List<BestProductResponse> getBestProducts() {
+		LocalDateTime endDateTime = LocalDateTime.now();
+		LocalDateTime startDateTime = endDateTime.minusDays(3);
+
+		Pageable pageable = Pageable.ofSize(5);
+
+		return productRepository.getBestProducts(startDateTime, endDateTime, pageable)
+			.stream()
+			.map(BestProductResponse::from)
+			.toList();
+	}
 }

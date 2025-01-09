@@ -1,0 +1,37 @@
+logging:
+  level:
+    org.hibernate:
+      sql: debug
+      orm.jdbc.bind: trace
+
+spring:
+  application.name: ecommerce
+  profiles:
+    active: test
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ecommerce
+    username: ecommerce
+    password: aa
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+---
+# test containers
+spring:
+  config:
+    activate:
+      on-profile: testcontainers
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:mysql:8.4.3://ecommerce
+    username: ecommerce
+    password: aa
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true

@@ -14,4 +14,6 @@ public interface ProductRepository {
 	Page<Product> getProducts(ProductSearchSpec spec, Pageable pageable);
 
 	Optional<Product> findById(long id);
+
+	List<Product> getAllById(List<Long> productIds);
 }

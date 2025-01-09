@@ -1,12 +1,15 @@
 package io.hhplus.ecommerce.order.presentation.response;
 
-import java.time.LocalDateTime;
-
+import io.hhplus.ecommerce.order.application.response.OrderCreateResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Schema(description = "주문 생성 응답")
+@Builder
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class OrderCreateApiResponse {
 
@@ -16,36 +19,10 @@ public class OrderCreateApiResponse {
 	@Schema(description = "주문 총 금액", example = "10000")
 	private final int amount;
 
-	@Schema(description = "적용한 쿠폰 아이디", example = "1")
-	private final Long couponId;
-
-	@Schema(description = "적용한 쿠폰명", example = "쿠폰1")
-	private final String couponName;
-
-	@Schema(description = "주문에 적용된 할인 금액", example = "0")
-	private final int discountAmount;
-
-	@Schema(description = "할인이 적용된 주문 금액", example = "10000")
-	private final int totalAmount;
-
-	@Schema(description = "주문 상태", example = "ORDERED")
-	private final String status;
-
-	@Schema(description = "주문 생성 일시", example = "2025-01-02 12:00:00")
-	private final LocalDateTime orderedAt;
-
-	@Builder
-	private OrderCreateApiResponse(
-		final Long orderId, final int amount, final Long couponId, final String couponName,
-		final int discountAmount, final int totalAmount, final String status, final LocalDateTime orderedAt
-	) {
-		this.orderId = orderId;
-		this.amount = amount;
-		this.couponId = couponId;
-		this.couponName = couponName;
-		this.discountAmount = discountAmount;
-		this.totalAmount = totalAmount;
-		this.status = status;
-		this.orderedAt = orderedAt;
+	public static OrderCreateApiResponse from(final OrderCreateResponse response) {
+		return OrderCreateApiResponse.builder()
+			.orderId(response.getOrderId())
+			.amount(response.getAmount())
+			.build();
 	}
 }

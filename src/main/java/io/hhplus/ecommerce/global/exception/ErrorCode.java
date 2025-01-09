@@ -19,6 +19,9 @@ public enum ErrorCode {
 	CHARGE_POINT_SHOULD_BE_POSITIVE("충전 포인트는 1이상이어야 합니다."),
 	POINT_IS_NOT_ENOUGH("보유 포인트가 부족합니다."),
 
+	// 상품
+	PRODUCT_ID_SHOULD_BE_POSITIVE("올바르지 않은 상품 아이디입니다."),
+	PRODUCT_NOT_FOUND("상품이 존재하지 않습니다."),
 	;
 	private final String message;
 }

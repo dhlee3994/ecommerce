@@ -11,10 +11,8 @@ import io.hhplus.ecommerce.global.CommonApiResponse;
 import io.hhplus.ecommerce.global.openapi.ApiFailResponse;
 import io.hhplus.ecommerce.global.openapi.ApiSuccessResponse;
 import io.hhplus.ecommerce.point.presentation.request.PointChargeApiRequest;
-import io.hhplus.ecommerce.point.presentation.request.PointRefundApiRequest;
 import io.hhplus.ecommerce.point.presentation.response.PointApiResponse;
 import io.hhplus.ecommerce.point.presentation.response.PointChargeApiResponse;
-import io.hhplus.ecommerce.point.presentation.response.PointRefundApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -51,21 +49,5 @@ public interface IPointApiController {
 	@PostMapping("/charge")
 	CommonApiResponse<PointChargeApiResponse> chargePoint(
 		@RequestBody PointChargeApiRequest request
-	);
-
-	@ApiFailResponse("보유 포인트보다 많은 포인트를 환불할 수 없습니다.")
-	@ApiSuccessResponse(PointRefundApiResponse.class)
-	@Operation(
-		summary = "포인트 환불",
-		description = "포인트를 환불한다.",
-		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-			content = @Content(
-				schema = @Schema(implementation = PointRefundApiRequest.class)
-			)
-		)
-	)
-	@PostMapping("/refund")
-	CommonApiResponse<PointRefundApiResponse> refundPoint(
-		@RequestBody PointRefundApiRequest request
 	);
 }

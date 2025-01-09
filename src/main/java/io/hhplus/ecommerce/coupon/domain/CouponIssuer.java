@@ -14,6 +14,7 @@ public class CouponIssuer {
 		return IssuedCoupon.builder()
 			.userId(user.getId())
 			.couponId(coupon.getId())
+			.discountAmount(coupon.getDiscountAmount())
 			.expiredAt(coupon.getExpiredAt())
 			.build();
 	}

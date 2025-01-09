@@ -28,7 +28,7 @@ class CouponIssuerTest {
 		final int quantity = 10;
 
 		final User user = User.builder().build();
-		final Coupon coupon = Coupon.builder().id(couponId).quantity(quantity).build();
+		final Coupon coupon = Coupon.builder().id(couponId).quantity(quantity).discountAmount(1000).build();
 		final CouponQuantity couponQuantity = CouponQuantity.builder().couponId(couponId).quantity(quantity).build();
 
 		// when
@@ -36,8 +36,8 @@ class CouponIssuerTest {
 
 		// then
 		assertThat(result).isNotNull()
-			.extracting("couponId", "userId")
-			.containsExactly(coupon.getId(), user.getId());
+			.extracting("couponId", "userId", "discountAmount")
+			.containsExactly(coupon.getId(), user.getId(), coupon.getDiscountAmount());
 
 		assertThat(coupon.getQuantity()).isEqualTo(couponQuantity.getQuantity());
 	}

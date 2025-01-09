@@ -28,7 +28,5 @@ public interface IPaymentApiController {
 		)
 	)
 	@PostMapping
-	CommonApiResponse<PaymentApiResponse> payment(
-		@RequestBody PaymentApiRequest request
-	);
+	CommonApiResponse<PaymentApiResponse> payment(@RequestBody PaymentApiRequest request);
 }

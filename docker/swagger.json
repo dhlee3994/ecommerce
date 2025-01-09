@@ -588,6 +588,12 @@
             "description": "사용자 ID",
             "format": "int64",
             "example": 1
+          },
+          "couponId": {
+            "type": "integer",
+            "description": "쿠폰 ID",
+            "format": "int64",
+            "example": 1
           }
         },
         "description": "결제 요청"

@@ -22,6 +22,11 @@ public enum ErrorCode {
 	// 상품
 	PRODUCT_ID_SHOULD_BE_POSITIVE("올바르지 않은 상품 아이디입니다."),
 	PRODUCT_NOT_FOUND("상품이 존재하지 않습니다."),
+	// 쿠폰
+	COUPON_ID_SHOULD_BE_POSITIVE("올바르지 않은 쿠폰 아이디입니다."),
+	COUPON_NOT_FOUND("쿠폰을 조회할 수 없습니다."),
+	COUPON_QUANTITY_IS_NOT_ENOUGH("쿠폰 발급가능 수량이 부족합니다."),
+	COUPON_ALREADY_ISSUED("이미 발급받은 쿠폰입니다."),
 	;
 	private final String message;
 }

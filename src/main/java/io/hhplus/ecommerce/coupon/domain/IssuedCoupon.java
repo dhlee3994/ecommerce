@@ -38,6 +38,8 @@ public class IssuedCoupon {
 
 	private Long couponId;
 
+	private Long orderId;
+
 	private int discountAmount;
 
 	@CreatedDate
@@ -54,6 +56,7 @@ public class IssuedCoupon {
 	private IssuedCoupon(
 		final Long userId,
 		final Long couponId,
+		final Long orderId,
 		final int discountAmount,
 		final LocalDateTime expiredAt,
 		final LocalDateTime usedAt,
@@ -61,6 +64,7 @@ public class IssuedCoupon {
 	) {
 		this.userId = userId;
 		this.couponId = couponId;
+		this.orderId = orderId;
 		this.discountAmount = discountAmount;
 		this.expiredAt = expiredAt;
 		this.usedAt = usedAt;
@@ -85,8 +89,9 @@ public class IssuedCoupon {
 		}
 	}
 
-	public void use(final LocalDateTime usedAt) {
+	public void use(final Long orderId, final LocalDateTime usedAt) {
 		validate(usedAt);
+		this.orderId = orderId;
 		this.usedAt = usedAt;
 	}
 }

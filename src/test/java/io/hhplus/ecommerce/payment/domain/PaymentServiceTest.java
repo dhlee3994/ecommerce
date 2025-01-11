@@ -18,6 +18,7 @@ import io.hhplus.ecommerce.global.exception.EcommerceException;
 import io.hhplus.ecommerce.order.domain.Order;
 import io.hhplus.ecommerce.order.domain.OrderStatus;
 import io.hhplus.ecommerce.point.domain.Point;
+import io.hhplus.ecommerce.util.EntityIdSetter;
 
 class PaymentServiceTest {
 
@@ -32,11 +33,13 @@ class PaymentServiceTest {
 	@Test
 	void pay() throws Exception {
 		// given
+		final Long orderId = 1L;
 		final int amount = 1000;
 		final Order order = Order.builder()
 			.amount(amount)
 			.status(OrderStatus.ORDERED)
 			.build();
+		EntityIdSetter.setId(order, orderId);
 
 		final int pointHeld = 10000;
 		final Point point = Point.builder()
@@ -60,6 +63,8 @@ class PaymentServiceTest {
 		assertThat(result.getAmount()).isEqualTo(paymentAmount);
 		assertThat(point.getPoint()).isEqualTo(expectedPointHeld);
 		assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
+
+		assertThat(issuedCoupon.getOrderId()).isEqualTo(orderId);
 		assertThat(issuedCoupon.getUsedAt()).isNotNull();
 	}
 

@@ -110,7 +110,10 @@ class PaymentApplicationServiceIntegrationTest {
 
 		assertThat(pointJpaRepository.findByUserId(userId).get().getPoint()).isEqualTo(expectedPointHeld);
 		assertThat(orderJpaRepository.findById(order.getId()).get().getStatus()).isEqualTo(OrderStatus.PAID);
-		assertThat(issuedCouponJpaRepository.findById(issuedCoupon.getId()).get().getUsedAt()).isNotNull();
+
+		final IssuedCoupon afterIssuedCoupon = issuedCouponJpaRepository.findById(issuedCoupon.getId()).get();
+		assertThat(afterIssuedCoupon.getOrderId()).isEqualTo(order.getId());
+		assertThat(afterIssuedCoupon.getUsedAt()).isNotNull();
 	}
 
 	@DisplayName("쿠폰을 적용하지 않으면 주문 총 금액을 결제한다.")

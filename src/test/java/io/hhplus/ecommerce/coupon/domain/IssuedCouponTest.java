@@ -49,12 +49,14 @@ class IssuedCouponTest {
 			.usedAt(null)
 			.build();
 
+		final Long orderId = 1L;
 		final LocalDateTime usedAt = expiredAt.minusMinutes(1);
 
 		// when
-		issuedCoupon.use(usedAt);
+		issuedCoupon.use(orderId, usedAt);
 
 		// then
+		assertThat(issuedCoupon.getOrderId()).isEqualTo(orderId);
 		assertThat(issuedCoupon.getUsedAt()).isEqualTo(usedAt);
 	}
 
@@ -68,10 +70,11 @@ class IssuedCouponTest {
 			.usedAt(null)
 			.build();
 
+		final Long orderId = 1L;
 		final LocalDateTime usedAt = expiredAt.plusMinutes(1);
 
 		// when * then
-		assertThatThrownBy(() -> issuedCoupon.use(usedAt))
+		assertThatThrownBy(() -> issuedCoupon.use(orderId, usedAt))
 			.isInstanceOf(EcommerceException.class)
 			.hasMessage(COUPON_IS_EXPIRED.getMessage());
 	}
@@ -88,10 +91,11 @@ class IssuedCouponTest {
 			.usedAt(usedAt)
 			.build();
 
-		final LocalDateTime dateTime = expiredAt.minusMinutes(1);
+		final Long orderId = 1L;
+		final LocalDateTime tryToUsedAt = expiredAt.minusMinutes(1);
 
 		// when * then
-		assertThatThrownBy(() -> issuedCoupon.use(dateTime))
+		assertThatThrownBy(() -> issuedCoupon.use(orderId, tryToUsedAt))
 			.isInstanceOf(EcommerceException.class)
 			.hasMessage(COUPON_ALREADY_USED.getMessage());
 	}

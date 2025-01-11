@@ -13,7 +13,7 @@ public class PaymentService {
 
 	public Payment pay(final Order order, final Point point, final IssuedCoupon issuedCoupon) {
 		final LocalDateTime paymentAt = LocalDateTime.now();
-		issuedCoupon.use(paymentAt);
+		issuedCoupon.use(order.getId(), paymentAt);
 
 		final int paymentAmount = order.calculatePaymentPrice(issuedCoupon.getDiscountAmount());
 		point.use(paymentAmount);

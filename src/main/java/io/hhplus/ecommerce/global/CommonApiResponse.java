@@ -24,15 +24,15 @@ public class CommonApiResponse<T> {
 		this.data = data;
 	}
 
-	private static <T> CommonApiResponse<T> of(final int code, final String message, final T data) {
-		return new CommonApiResponse<T>(code, message, data);
-	}
-
-	public static <T> CommonApiResponse<T> success(final int httpStatusCode, final T data) {
-		return of(httpStatusCode, null, data);
+	public static <T> CommonApiResponse<T> of(final int code, final String message, final T data) {
+		return new CommonApiResponse<>(code, message, data);
 	}
 
 	public static <T> CommonApiResponse<T> ok(final T data) {
-		return success(HttpStatus.OK.value(), data);
+		return of(HttpStatus.OK.value(), null, data);
+	}
+
+	public static <T> CommonApiResponse<T> badRequest(final String message) {
+		return of(HttpStatus.BAD_REQUEST.value(), message, null);
 	}
 }

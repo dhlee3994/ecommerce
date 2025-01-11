@@ -3,9 +3,9 @@ package io.hhplus.ecommerce.coupon.domain;
 import static io.hhplus.ecommerce.global.exception.ErrorCode.COUPON_ALREADY_USED;
 import static io.hhplus.ecommerce.global.exception.ErrorCode.COUPON_IS_EXPIRED;
 
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,9 +13,8 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.SQLRestriction;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import io.hhplus.ecommerce.global.BaseEntity;
 import io.hhplus.ecommerce.global.exception.EcommerceException;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -24,11 +23,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
 @SQLRestriction("deleted_at is null")
+@AttributeOverride(name = "createdAt", column = @Column(name = "issued_at"))
 @Table(name = "issued_coupon")
 @Entity
-public class IssuedCoupon {
+public class IssuedCoupon extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,15 +41,9 @@ public class IssuedCoupon {
 
 	private int discountAmount;
 
-	@CreatedDate
-	@Column(updatable = false)
-	private LocalDateTime issuedAt;
-
 	private LocalDateTime expiredAt;
 
 	private LocalDateTime usedAt;
-
-	private LocalDateTime deletedAt;
 
 	@Builder
 	private IssuedCoupon(
@@ -59,8 +52,7 @@ public class IssuedCoupon {
 		final Long orderId,
 		final int discountAmount,
 		final LocalDateTime expiredAt,
-		final LocalDateTime usedAt,
-		final LocalDateTime deletedAt
+		final LocalDateTime usedAt
 	) {
 		this.userId = userId;
 		this.couponId = couponId;
@@ -68,7 +60,10 @@ public class IssuedCoupon {
 		this.discountAmount = discountAmount;
 		this.expiredAt = expiredAt;
 		this.usedAt = usedAt;
-		this.deletedAt = deletedAt;
+	}
+
+	public LocalDateTime getIssuedAt() {
+		return this.getCreatedAt();
 	}
 
 	public static IssuedCoupon emptyCoupon() {

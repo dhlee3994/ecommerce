@@ -1,5 +1,8 @@
 package io.hhplus.ecommerce.order.presentation.request;
 
+import io.hhplus.ecommerce.global.exception.ErrorCode;
+import io.hhplus.ecommerce.global.exception.InvalidRequestException;
+import io.hhplus.ecommerce.order.application.request.OrderItemCreateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,13 +17,19 @@ public class OrderItemCreateApiRequest {
 	@Schema(description = "주문 상품 수량", example = "100")
 	private final int quantity;
 
-	@Schema(description = "상품에 적용할 쿠폰 ID", example = "2")
-	private final Long couponId;
-
 	@Builder
-	private OrderItemCreateApiRequest(final Long productId, final int quantity, final Long couponId) {
+	private OrderItemCreateApiRequest(final Long productId, final int quantity) {
+		if (quantity <= 0) {
+			throw new InvalidRequestException(ErrorCode.ORDER_QUANTITY_SHOULD_BE_POSITIVE);
+		}
 		this.productId = productId;
 		this.quantity = quantity;
-		this.couponId = couponId;
+	}
+
+	public OrderItemCreateRequest toServiceRequest() {
+		return OrderItemCreateRequest.builder()
+			.productId(productId)
+			.quantity(quantity)
+			.build();
 	}
 }

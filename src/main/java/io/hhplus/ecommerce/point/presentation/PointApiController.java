@@ -8,11 +8,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.hhplus.ecommerce.global.CommonApiResponse;
+import io.hhplus.ecommerce.global.exception.ErrorCode;
+import io.hhplus.ecommerce.global.exception.InvalidRequestException;
+import io.hhplus.ecommerce.point.application.PointApplicationService;
+import io.hhplus.ecommerce.point.application.response.PointChargeResponse;
+import io.hhplus.ecommerce.point.application.response.PointResponse;
 import io.hhplus.ecommerce.point.presentation.request.PointChargeApiRequest;
-import io.hhplus.ecommerce.point.presentation.request.PointRefundApiRequest;
 import io.hhplus.ecommerce.point.presentation.response.PointApiResponse;
 import io.hhplus.ecommerce.point.presentation.response.PointChargeApiResponse;
-import io.hhplus.ecommerce.point.presentation.response.PointRefundApiResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -20,40 +23,23 @@ import lombok.RequiredArgsConstructor;
 @RestController
 public class PointApiController implements IPointApiController {
 
+
+	private final PointApplicationService pointApplicationService;
+
 	@GetMapping
 	@Override
 	public CommonApiResponse<PointApiResponse> getPoint(@RequestParam final Long userId) {
-		return CommonApiResponse.ok(
-			PointApiResponse
-				.builder()
-				.point(10000)
-				.build()
-		);
+		if (userId == null || userId <= 0) {
+			throw new InvalidRequestException(ErrorCode.INVALID_REQUEST);
+		}
+		PointResponse pointResponse = pointApplicationService.getPoint(userId);
+		return CommonApiResponse.ok(PointApiResponse.from(pointResponse));
 	}
 
 	@PostMapping("/charge")
 	@Override
 	public CommonApiResponse<PointChargeApiResponse> chargePoint(@RequestBody final PointChargeApiRequest request) {
-		return CommonApiResponse.ok(
-			PointChargeApiResponse
-				.builder()
-				.amount(10000)
-				.beforePoint(0)
-				.afterPoint(10000)
-				.build()
-		);
-	}
-
-	@PostMapping("/refund")
-	@Override
-	public CommonApiResponse<PointRefundApiResponse> refundPoint(@RequestBody final PointRefundApiRequest request) {
-		return CommonApiResponse.ok(
-			PointRefundApiResponse
-				.builder()
-				.amount(10000)
-				.beforePoint(10000)
-				.afterPoint(0)
-				.build()
-		);
+		final PointChargeResponse chargeResponse = pointApplicationService.charge(request.toServiceRequest());
+		return CommonApiResponse.ok(PointChargeApiResponse.from(chargeResponse));
 	}
 }

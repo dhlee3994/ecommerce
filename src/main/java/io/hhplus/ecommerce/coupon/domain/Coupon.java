@@ -38,14 +38,12 @@ public class Coupon extends BaseEntity {
 
 	@Builder
 	private Coupon(
-		final Long id,
 		final String name,
 		final int issueLimit,
 		final int quantity,
 		final int discountAmount,
 		final LocalDateTime expiredAt
 	) {
-		this.id = id;
 		this.name = name;
 		this.issueLimit = issueLimit;
 		this.quantity = quantity;

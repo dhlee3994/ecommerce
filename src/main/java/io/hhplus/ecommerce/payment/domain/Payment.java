@@ -30,7 +30,7 @@ public class Payment extends BaseEntity {
 	private int amount;
 
 	@Builder
-	private Payment(final Long id, final Long orderId, final int amount) {
+	private Payment(final Long orderId, final int amount) {
 		this.id = id;
 		this.orderId = orderId;
 		this.amount = amount;

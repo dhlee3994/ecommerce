@@ -28,7 +28,7 @@ class CouponIssuerTest {
 		final int quantity = 10;
 
 		final User user = User.builder().build();
-		final Coupon coupon = Coupon.builder().id(couponId).quantity(quantity).discountAmount(1000).build();
+		final Coupon coupon = Coupon.builder().quantity(quantity).discountAmount(1000).build();
 		final CouponQuantity couponQuantity = CouponQuantity.builder().couponId(couponId).quantity(quantity).build();
 
 		// when
@@ -50,7 +50,7 @@ class CouponIssuerTest {
 		final int quantity = 0;
 
 		final User user = User.builder().build();
-		final Coupon coupon = Coupon.builder().id(couponId).quantity(quantity).build();
+		final Coupon coupon = Coupon.builder().quantity(quantity).build();
 		final CouponQuantity couponQuantity = CouponQuantity.builder().couponId(couponId).quantity(quantity).build();
 
 		// when & then

@@ -52,7 +52,6 @@ public class IssuedCoupon {
 
 	@Builder
 	private IssuedCoupon(
-		final Long id,
 		final Long userId,
 		final Long couponId,
 		final int discountAmount,
@@ -60,7 +59,6 @@ public class IssuedCoupon {
 		final LocalDateTime usedAt,
 		final LocalDateTime deletedAt
 	) {
-		this.id = id;
 		this.userId = userId;
 		this.couponId = couponId;
 		this.discountAmount = discountAmount;

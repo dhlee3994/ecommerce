@@ -30,10 +30,11 @@ import io.hhplus.ecommerce.order.domain.OrderRepository;
 import io.hhplus.ecommerce.product.domain.Product;
 import io.hhplus.ecommerce.product.domain.ProductRepository;
 import io.hhplus.ecommerce.product.domain.Stock;
-import io.hhplus.ecommerce.product.domain.StockService;
 import io.hhplus.ecommerce.product.domain.StockRepository;
+import io.hhplus.ecommerce.product.domain.StockService;
 import io.hhplus.ecommerce.user.domain.User;
 import io.hhplus.ecommerce.user.domain.UserRepository;
+import io.hhplus.ecommerce.util.EntityIdSetter;
 
 @ExtendWith(MockitoExtension.class)
 class OrderApplicationServiceUnitTest {
@@ -60,10 +61,10 @@ class OrderApplicationServiceUnitTest {
 		// given
 		final Long userId = 1L;
 		final User user = User.builder()
-			.id(userId)
 			.name("사용자")
 			.build();
 
+		EntityIdSetter.setId(user, userId);
 		given(userRepository.existsById(userId))
 			.willReturn(true);
 
@@ -71,19 +72,20 @@ class OrderApplicationServiceUnitTest {
 		final int priceA = 100;
 		final int quantityA = 10;
 		final Product productA = Product.builder()
-			.id(productIdA)
 			.name("상품A")
 			.price(priceA)
 			.build();
+
 		final Long productIdB = 2L;
 		final int priceB = 200;
 		final int quantityB = 20;
 		final Product productB = Product.builder()
-			.id(productIdB)
 			.name("상품B")
 			.price(priceB)
 			.build();
 
+		EntityIdSetter.setId(productA, productIdA);
+		EntityIdSetter.setId(productB, productIdB);
 		given(productRepository.getAllById(List.of(productIdA, productIdB)))
 			.willReturn(List.of(productA, productB));
 
@@ -103,9 +105,10 @@ class OrderApplicationServiceUnitTest {
 
 		final Long orderId = 1L;
 		final Order order = Order.builder()
-			.id(orderId)
 			.userId(userId)
 			.build();
+
+		EntityIdSetter.setId(order, orderId);
 		given(orderRepository.save(any(Order.class)))
 			.willReturn(order);
 
@@ -182,10 +185,10 @@ class OrderApplicationServiceUnitTest {
 		// given
 		final Long userId = 1L;
 		final User user = User.builder()
-			.id(userId)
 			.name("사용자")
 			.build();
 
+		EntityIdSetter.setId(user, userId);
 		given(userRepository.existsById(userId))
 			.willReturn(true);
 
@@ -213,10 +216,10 @@ class OrderApplicationServiceUnitTest {
 		// given
 		final Long userId = 1L;
 		final User user = User.builder()
-			.id(userId)
 			.name("사용자")
 			.build();
 
+		EntityIdSetter.setId(user, userId);
 		given(userRepository.existsById(userId))
 			.willReturn(true);
 
@@ -224,11 +227,11 @@ class OrderApplicationServiceUnitTest {
 		final int price = 100;
 		final int quantity = 10;
 		final Product product = Product.builder()
-			.id(productId)
 			.name("상품A")
 			.price(price)
 			.build();
 
+		EntityIdSetter.setId(product, productId);
 		given(productRepository.getAllById(List.of(productId)))
 			.willReturn(List.of(product));
 

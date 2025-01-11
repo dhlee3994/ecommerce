@@ -38,8 +38,7 @@ public class Order extends BaseEntity {
 	private OrderStatus status;
 
 	@Builder
-	private Order(final Long id, final Long userId, final int amount, final OrderStatus status) {
-		this.id = id;
+	private Order(final Long userId, final int amount, final OrderStatus status) {
 		this.userId = userId;
 		this.amount = amount;
 		this.status = status;

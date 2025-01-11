@@ -38,6 +38,7 @@ import io.hhplus.ecommerce.payment.domain.PaymentService;
 import io.hhplus.ecommerce.point.domain.Point;
 import io.hhplus.ecommerce.point.domain.PointRepository;
 import io.hhplus.ecommerce.user.domain.UserRepository;
+import io.hhplus.ecommerce.util.EntityIdSetter;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentApplicationServiceUnitTest {
@@ -76,20 +77,22 @@ class PaymentApplicationServiceUnitTest {
 
 		final Long pointId = 1L;
 		final Point point = Point.builder()
-			.id(pointId)
 			.userId(userId)
 			.point(pointHeld)
 			.build();
+
+		EntityIdSetter.setId(point, pointId);
 		given(pointRepository.findByUserIdForUpdate(userId))
 			.willReturn(Optional.of(point));
 
 		final Long orderId = 1L;
 		final Order order = Order.builder()
-			.id(orderId)
 			.userId(userId)
 			.amount(orderAmount)
 			.status(OrderStatus.ORDERED)
 			.build();
+
+		EntityIdSetter.setId(order, orderId);
 		given(orderRepository.findByIdForUpdate(order.getId()))
 			.willReturn(Optional.of(order));
 
@@ -112,11 +115,11 @@ class PaymentApplicationServiceUnitTest {
 
 		final Long paymentId = 1L;
 		final Payment payment = Payment.builder()
-			.id(paymentId)
 			.orderId(orderId)
 			.amount(expectedPaymentPrice)
 			.build();
 
+		EntityIdSetter.setId(payment, paymentId);
 		given(paymentService.pay(order, point, issuedCoupon))
 			.willReturn(payment);
 
@@ -146,20 +149,22 @@ class PaymentApplicationServiceUnitTest {
 
 		final Long pointId = 1L;
 		final Point point = Point.builder()
-			.id(pointId)
 			.userId(userId)
 			.point(pointHeld)
 			.build();
+
+		EntityIdSetter.setId(point, pointId);
 		given(pointRepository.findByUserIdForUpdate(userId))
 			.willReturn(Optional.of(point));
 
 		final Long orderId = 1L;
 		final Order order = Order.builder()
-			.id(orderId)
 			.userId(userId)
 			.amount(orderAmount)
 			.status(OrderStatus.ORDERED)
 			.build();
+
+		EntityIdSetter.setId(order, orderId);
 		given(orderRepository.findByIdForUpdate(order.getId()))
 			.willReturn(Optional.of(order));
 
@@ -200,11 +205,12 @@ class PaymentApplicationServiceUnitTest {
 
 		final Long orderId = 1L;
 		final Order order = Order.builder()
-			.id(orderId)
 			.userId(userId)
 			.amount(1000)
 			.status(OrderStatus.PAID)
 			.build();
+
+		EntityIdSetter.setId(order, orderId);
 		given(orderRepository.findByIdForUpdate(order.getId()))
 			.willReturn(Optional.of(order));
 
@@ -234,20 +240,20 @@ class PaymentApplicationServiceUnitTest {
 
 		final Long pointId = 1L;
 		final Point point = Point.builder()
-			.id(pointId)
 			.userId(userId)
 			.point(pointHeld)
 			.build();
+		EntityIdSetter.setId(point, pointId);
 		given(pointRepository.findByUserIdForUpdate(userId))
 			.willReturn(Optional.of(point));
 
 		final Long orderId = 1L;
 		final Order order = Order.builder()
-			.id(orderId)
 			.userId(userId)
 			.amount(orderAmount)
 			.status(OrderStatus.ORDERED)
 			.build();
+		EntityIdSetter.setId(order, orderId);
 		given(orderRepository.findByIdForUpdate(order.getId()))
 			.willReturn(Optional.of(order));
 
@@ -292,20 +298,20 @@ class PaymentApplicationServiceUnitTest {
 
 		final Long pointId = 1L;
 		final Point point = Point.builder()
-			.id(pointId)
 			.userId(userId)
 			.point(pointHeld)
 			.build();
+		EntityIdSetter.setId(point, pointId);
 		given(pointRepository.findByUserIdForUpdate(userId))
 			.willReturn(Optional.of(point));
 
 		final Long orderId = 1L;
 		final Order order = Order.builder()
-			.id(orderId)
 			.userId(userId)
 			.amount(orderAmount)
 			.status(OrderStatus.ORDERED)
 			.build();
+		EntityIdSetter.setId(order, orderId);
 		given(orderRepository.findByIdForUpdate(order.getId()))
 			.willReturn(Optional.of(order));
 

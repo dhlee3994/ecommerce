@@ -7,54 +7,18 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.context.ImportTestcontainers;
-import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.utility.TestcontainersConfiguration;
 
+import io.hhplus.ecommerce.common.ServiceIntegrationTest;
 import io.hhplus.ecommerce.global.exception.ErrorCode;
 import io.hhplus.ecommerce.order.application.request.OrderCreateRequest;
 import io.hhplus.ecommerce.order.application.request.OrderItemCreateRequest;
-import io.hhplus.ecommerce.order.infra.OrderItemJpaRepository;
-import io.hhplus.ecommerce.order.infra.OrderJpaRepository;
 import io.hhplus.ecommerce.product.domain.Product;
 import io.hhplus.ecommerce.product.domain.Stock;
-import io.hhplus.ecommerce.product.infra.ProductJpaRepository;
-import io.hhplus.ecommerce.product.infra.StockJpaRepository;
 import io.hhplus.ecommerce.user.domain.User;
-import io.hhplus.ecommerce.user.infrastructure.UserJpaRepository;
 
-@ActiveProfiles("testcontainers")
-@ImportTestcontainers(TestcontainersConfiguration.class)
-@SpringBootTest
-class OrderApplicationServiceConcurrencyTest {
-
-	@Autowired
-	private OrderApplicationService orderApplicationService;
-
-	@Autowired
-	private OrderJpaRepository orderJpaRepository;
-	@Autowired
-	private OrderItemJpaRepository orderItemJpaRepository;
-	@Autowired
-	private ProductJpaRepository productJpaRepository;
-	@Autowired
-	private StockJpaRepository stockJpaRepository;
-	@Autowired
-	private UserJpaRepository userJpaRepository;
-
-	@BeforeEach
-	void setUp() {
-		orderJpaRepository.deleteAllInBatch();
-		orderItemJpaRepository.deleteAllInBatch();
-		productJpaRepository.deleteAllInBatch();
-		stockJpaRepository.deleteAllInBatch();
-		userJpaRepository.deleteAllInBatch();
-	}
+class OrderApplicationServiceConcurrencyTest extends ServiceIntegrationTest {
 
 	@DisplayName("재고가 10개인 상품에 대해 1개씩 20번의 주문 요청이 동시에 들어오면 10개의 요청만 성공한다.")
 	@Test

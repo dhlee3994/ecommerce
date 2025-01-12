@@ -9,53 +9,23 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.context.ImportTestcontainers;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.utility.TestcontainersConfiguration;
 
+import io.hhplus.ecommerce.common.ServiceIntegrationTest;
 import io.hhplus.ecommerce.global.exception.ErrorCode;
 import io.hhplus.ecommerce.global.exception.InvalidRequestException;
 import io.hhplus.ecommerce.order.domain.Order;
 import io.hhplus.ecommerce.order.domain.OrderItem;
-import io.hhplus.ecommerce.order.infra.OrderItemJpaRepository;
-import io.hhplus.ecommerce.order.infra.OrderJpaRepository;
 import io.hhplus.ecommerce.product.application.request.ProductSearchRequest;
 import io.hhplus.ecommerce.product.application.response.BestProductResponse;
 import io.hhplus.ecommerce.product.application.response.ProductResponse;
 import io.hhplus.ecommerce.product.domain.Product;
-import io.hhplus.ecommerce.product.infra.ProductJpaRepository;
 
-@ActiveProfiles("testcontainers")
-@ImportTestcontainers(TestcontainersConfiguration.class)
-@SpringBootTest
-class ProductApplicationServiceIntegrateTest {
-
-	@Autowired
-	private ProductApplicationService productApplicationService;
-
-	@Autowired
-	private ProductJpaRepository productJpaRepository;
-
-	@Autowired
-	private OrderJpaRepository orderJpaRepository;
-
-	@Autowired
-	private OrderItemJpaRepository orderItemJpaRepository;
-
-	@AfterEach
-	void tearDown() {
-		productJpaRepository.deleteAllInBatch();
-		orderJpaRepository.deleteAllInBatch();
-		orderItemJpaRepository.deleteAllInBatch();
-	}
+class ProductApplicationServiceIntegrateTest extends ServiceIntegrationTest {
 
 	@DisplayName("상품 목록 조회")
 	@Nested

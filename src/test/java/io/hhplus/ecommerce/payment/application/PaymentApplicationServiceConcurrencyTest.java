@@ -8,56 +8,20 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.context.ImportTestcontainers;
-import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.utility.TestcontainersConfiguration;
 
+import io.hhplus.ecommerce.common.ServiceIntegrationTest;
 import io.hhplus.ecommerce.coupon.domain.DiscountType;
 import io.hhplus.ecommerce.coupon.domain.IssuedCoupon;
-import io.hhplus.ecommerce.coupon.infra.IssuedCouponJpaRepository;
 import io.hhplus.ecommerce.global.exception.EcommerceException;
 import io.hhplus.ecommerce.order.domain.Order;
 import io.hhplus.ecommerce.order.domain.OrderStatus;
-import io.hhplus.ecommerce.order.infra.OrderJpaRepository;
 import io.hhplus.ecommerce.payment.application.request.PaymentRequest;
 import io.hhplus.ecommerce.point.domain.Point;
-import io.hhplus.ecommerce.point.infra.PointJpaRepository;
-import io.hhplus.ecommerce.product.infra.StockJpaRepository;
 import io.hhplus.ecommerce.user.domain.User;
-import io.hhplus.ecommerce.user.infrastructure.UserJpaRepository;
 
-@ActiveProfiles("testcontainers")
-@ImportTestcontainers(TestcontainersConfiguration.class)
-@SpringBootTest
-class PaymentApplicationServiceConcurrencyTest {
-
-	@Autowired
-	private PaymentApplicationService paymentApplicationService;
-
-	@Autowired
-	private OrderJpaRepository orderJpaRepository;
-	@Autowired
-	private StockJpaRepository stockJpaRepository;
-	@Autowired
-	private UserJpaRepository userJpaRepository;
-	@Autowired
-	private PointJpaRepository pointJpaRepository;
-	@Autowired
-	private IssuedCouponJpaRepository issuedCouponJpaRepository;
-
-	@BeforeEach
-	void setUp() {
-		orderJpaRepository.deleteAllInBatch();
-		stockJpaRepository.deleteAllInBatch();
-		userJpaRepository.deleteAllInBatch();
-		pointJpaRepository.deleteAllInBatch();
-		issuedCouponJpaRepository.deleteAllInBatch();
-	}
+class PaymentApplicationServiceConcurrencyTest extends ServiceIntegrationTest {
 
 	@DisplayName("하나의 결제를 동시에 10번 요청해도 1번의 결제만 성공한다.")
 	@Test

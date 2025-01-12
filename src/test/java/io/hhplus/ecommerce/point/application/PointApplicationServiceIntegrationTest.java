@@ -7,44 +7,19 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import jakarta.persistence.EntityNotFoundException;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.context.ImportTestcontainers;
-import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.utility.TestcontainersConfiguration;
 
+import io.hhplus.ecommerce.common.ServiceIntegrationTest;
 import io.hhplus.ecommerce.global.exception.EcommerceException;
 import io.hhplus.ecommerce.point.application.request.PointChargeRequest;
 import io.hhplus.ecommerce.point.application.response.PointChargeResponse;
 import io.hhplus.ecommerce.point.application.response.PointResponse;
 import io.hhplus.ecommerce.point.domain.Point;
-import io.hhplus.ecommerce.point.infra.PointJpaRepository;
 import io.hhplus.ecommerce.user.domain.User;
-import io.hhplus.ecommerce.user.infrastructure.UserJpaRepository;
 
-@ActiveProfiles("testcontainers")
-@ImportTestcontainers(TestcontainersConfiguration.class)
-@SpringBootTest
-class PointApplicationServiceIntegrationTest {
-
-	@Autowired
-	private PointApplicationService pointApplicationService;
-
-	@Autowired
-	private UserJpaRepository userJpaRepository;
-
-	@Autowired
-	private PointJpaRepository pointJpaRepository;
-
-	@BeforeEach
-	void setUp() {
-		userJpaRepository.deleteAllInBatch();
-		pointJpaRepository.deleteAllInBatch();
-	}
+class PointApplicationServiceIntegrationTest extends ServiceIntegrationTest {
 
 	@DisplayName("포인트 조회 기능")
 	@Nested

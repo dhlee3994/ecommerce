@@ -6,56 +6,20 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.context.ImportTestcontainers;
-import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.utility.TestcontainersConfiguration;
 
+import io.hhplus.ecommerce.common.ServiceIntegrationTest;
 import io.hhplus.ecommerce.global.exception.EcommerceException;
 import io.hhplus.ecommerce.global.exception.ErrorCode;
 import io.hhplus.ecommerce.order.application.request.OrderCreateRequest;
 import io.hhplus.ecommerce.order.application.request.OrderItemCreateRequest;
 import io.hhplus.ecommerce.order.application.response.OrderCreateResponse;
-import io.hhplus.ecommerce.order.infra.OrderItemJpaRepository;
-import io.hhplus.ecommerce.order.infra.OrderJpaRepository;
 import io.hhplus.ecommerce.product.domain.Product;
 import io.hhplus.ecommerce.product.domain.Stock;
-import io.hhplus.ecommerce.product.infra.ProductJpaRepository;
-import io.hhplus.ecommerce.product.infra.StockJpaRepository;
 import io.hhplus.ecommerce.user.domain.User;
-import io.hhplus.ecommerce.user.infrastructure.UserJpaRepository;
 
-@ActiveProfiles("testcontainers")
-@ImportTestcontainers(TestcontainersConfiguration.class)
-@SpringBootTest
-class OrderApplicationServiceIntegrationTest {
-
-	@Autowired
-	private OrderApplicationService orderApplicationService;
-
-	@Autowired
-	private OrderJpaRepository orderJpaRepository;
-	@Autowired
-	private OrderItemJpaRepository orderItemJpaRepository;
-	@Autowired
-	private ProductJpaRepository productJpaRepository;
-	@Autowired
-	private StockJpaRepository stockJpaRepository;
-	@Autowired
-	private UserJpaRepository userJpaRepository;
-
-	@BeforeEach
-	void setUp() {
-		orderJpaRepository.deleteAllInBatch();
-		orderItemJpaRepository.deleteAllInBatch();
-		productJpaRepository.deleteAllInBatch();
-		stockJpaRepository.deleteAllInBatch();
-		userJpaRepository.deleteAllInBatch();
-	}
+class OrderApplicationServiceIntegrationTest extends ServiceIntegrationTest {
 
 	@DisplayName("여러 종류의 상품과 주문 수량을 받아서 주문을 생성할 수 있다.")
 	@Test

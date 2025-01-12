@@ -1,5 +1,6 @@
 package io.hhplus.ecommerce.order.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,14 +26,19 @@ public class OrderItem extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(nullable = false)
 	private Long orderId;
 
+	@Column(nullable = false)
 	private Long productId;
 
+	@Column(length = 100, nullable = false)
 	private String productName;
 
+	@Column(nullable = false)
 	private int price;
 
+	@Column(nullable = false)
 	private int quantity;
 
 	@Builder

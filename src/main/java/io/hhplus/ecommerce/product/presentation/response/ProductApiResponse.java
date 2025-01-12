@@ -25,16 +25,12 @@ public class ProductApiResponse {
 	@Schema(description = "상품 수량", example = "100")
 	private final int quantity;
 
-	@Schema(description = "상품 상태", example = "판매중")
-	private final String status;
-
 	public static ProductApiResponse from(final ProductResponse response) {
 		return ProductApiResponse.builder()
 			.id(response.getId())
 			.name(response.getName())
 			.price(response.getPrice())
 			.quantity(response.getQuantity())
-			.status(response.getStatus())
 			.build();
 	}
 }

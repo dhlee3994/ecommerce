@@ -16,6 +16,7 @@ import org.hibernate.annotations.SQLRestriction;
 
 import io.hhplus.ecommerce.global.BaseEntity;
 import io.hhplus.ecommerce.global.exception.EcommerceException;
+import io.hhplus.ecommerce.global.exception.ErrorCode;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,7 +40,9 @@ public class IssuedCoupon extends BaseEntity {
 
 	private Long orderId;
 
-	private int discountAmount;
+	private DiscountType discountType;
+
+	private int discountValue;
 
 	private LocalDateTime expiredAt;
 
@@ -50,14 +53,20 @@ public class IssuedCoupon extends BaseEntity {
 		final Long userId,
 		final Long couponId,
 		final Long orderId,
-		final int discountAmount,
+		final DiscountType discountType,
+		final int discountValue,
 		final LocalDateTime expiredAt,
 		final LocalDateTime usedAt
 	) {
+		if (discountType == DiscountType.RATE && discountValue > 100) {
+			throw new EcommerceException(ErrorCode.RATE_DISCOUNT_VALUE_OVER_100);
+		}
+
 		this.userId = userId;
 		this.couponId = couponId;
 		this.orderId = orderId;
-		this.discountAmount = discountAmount;
+		this.discountType = discountType;
+		this.discountValue = discountValue;
 		this.expiredAt = expiredAt;
 		this.usedAt = usedAt;
 	}
@@ -68,7 +77,8 @@ public class IssuedCoupon extends BaseEntity {
 
 	public static IssuedCoupon emptyCoupon() {
 		return IssuedCoupon.builder()
-			.discountAmount(0)
+			.discountType(DiscountType.NONE)
+			.discountValue(0)
 			.expiredAt(LocalDateTime.MAX)
 			.usedAt(null)
 			.build();

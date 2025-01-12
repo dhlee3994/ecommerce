@@ -20,6 +20,7 @@ import org.testcontainers.utility.TestcontainersConfiguration;
 import io.hhplus.ecommerce.coupon.application.request.CouponIssueRequest;
 import io.hhplus.ecommerce.coupon.domain.Coupon;
 import io.hhplus.ecommerce.coupon.domain.CouponQuantity;
+import io.hhplus.ecommerce.coupon.domain.DiscountType;
 import io.hhplus.ecommerce.coupon.infra.CouponJpaRepository;
 import io.hhplus.ecommerce.coupon.infra.CouponQuantityJpaRepository;
 import io.hhplus.ecommerce.global.exception.ErrorCode;
@@ -59,6 +60,8 @@ class CouponApplicationServiceConcurrencyTest {
 			.name("쿠폰A")
 			.issueLimit(limit)
 			.quantity(limit)
+			.discountType(DiscountType.FIXED)
+			.discountValue(1000)
 			.expiredAt(LocalDateTime.of(2025, 1, 10, 14, 0))
 			.build());
 
@@ -123,6 +126,8 @@ class CouponApplicationServiceConcurrencyTest {
 			.name("쿠폰A")
 			.issueLimit(limit)
 			.quantity(limit)
+			.discountType(DiscountType.FIXED)
+			.discountValue(1000)
 			.expiredAt(LocalDateTime.of(2025, 1, 10, 14, 0))
 			.build());
 

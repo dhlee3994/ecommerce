@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import io.hhplus.ecommerce.global.exception.EcommerceException;
 import io.hhplus.ecommerce.user.domain.User;
+import io.hhplus.ecommerce.util.EntityIdSetter;
 
 class CouponIssuerTest {
 
@@ -24,11 +25,22 @@ class CouponIssuerTest {
 	@Test
 	void issueCoupon() throws Exception {
 		// given
+		final long userId = 1L;
+		final User user = User.builder().build();
+		EntityIdSetter.setId(user, userId);
+
 		final long couponId = 1L;
 		final int quantity = 10;
+		final DiscountType discountType = DiscountType.FIXED;
+		final int discountValue = 1000;
 
-		final User user = User.builder().build();
-		final Coupon coupon = Coupon.builder().quantity(quantity).discountAmount(1000).build();
+		final Coupon coupon = Coupon.builder()
+			.quantity(quantity)
+			.discountType(discountType)
+			.discountValue(discountValue)
+			.build();
+		EntityIdSetter.setId(coupon, couponId);
+
 		final CouponQuantity couponQuantity = CouponQuantity.builder().couponId(couponId).quantity(quantity).build();
 
 		// when
@@ -36,8 +48,8 @@ class CouponIssuerTest {
 
 		// then
 		assertThat(result).isNotNull()
-			.extracting("couponId", "userId", "discountAmount")
-			.containsExactly(coupon.getId(), user.getId(), coupon.getDiscountAmount());
+			.extracting("couponId", "userId", "discountType", "discountValue")
+			.containsExactly(couponId, userId, discountType, discountValue);
 
 		assertThat(coupon.getQuantity()).isEqualTo(couponQuantity.getQuantity());
 	}

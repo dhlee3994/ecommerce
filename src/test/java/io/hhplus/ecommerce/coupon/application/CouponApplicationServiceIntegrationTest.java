@@ -20,6 +20,7 @@ import io.hhplus.ecommerce.coupon.application.response.CouponResponse;
 import io.hhplus.ecommerce.coupon.application.response.IssuedCouponResponse;
 import io.hhplus.ecommerce.coupon.domain.Coupon;
 import io.hhplus.ecommerce.coupon.domain.CouponQuantity;
+import io.hhplus.ecommerce.coupon.domain.DiscountType;
 import io.hhplus.ecommerce.coupon.infra.CouponJpaRepository;
 import io.hhplus.ecommerce.coupon.infra.CouponQuantityJpaRepository;
 import io.hhplus.ecommerce.global.exception.EcommerceException;
@@ -63,13 +64,14 @@ class CouponApplicationServiceIntegrationTest {
 			final String name = "쿠폰1";
 			final int issueLimit = 30;
 			final int quantity = 30;
-			final int discountAmount = 1000;
+			final int discountValue = 1000;
 
 			final Coupon savedCoupon = couponJpaRepository.save(Coupon.builder()
 				.name(name)
 				.issueLimit(issueLimit)
 				.quantity(quantity)
-				.discountAmount(discountAmount)
+				.discountType(DiscountType.FIXED)
+				.discountValue(discountValue)
 				.build());
 
 			// when
@@ -77,8 +79,8 @@ class CouponApplicationServiceIntegrationTest {
 
 			// then
 			assertThat(result).isNotNull()
-				.extracting("name", "issueLimit", "quantity", "discountAmount")
-				.containsExactly(name, issueLimit, quantity, discountAmount);
+				.extracting("name", "issueLimit", "quantity", "discountValue")
+				.containsExactly(name, issueLimit, quantity, discountValue);
 		}
 
 		@DisplayName("조회하려는 쿠폰 아이디가 Null이면 InvalidRequestException이 발생한다.")
@@ -144,13 +146,14 @@ class CouponApplicationServiceIntegrationTest {
 			final String couponName = "쿠폰1";
 			final int issueLimit = 30;
 			final int quantity = 30;
-			final int discountAmount = 1000;
+			final int discountValue = 1000;
 
 			final Coupon coupon = couponJpaRepository.save(Coupon.builder()
 				.name(couponName)
 				.issueLimit(issueLimit)
 				.quantity(quantity)
-				.discountAmount(discountAmount)
+				.discountType(DiscountType.FIXED)
+				.discountValue(discountValue)
 				.build());
 
 			final CouponQuantity couponQuantity = couponQuantityJpaRepository.save(CouponQuantity.builder()
@@ -168,8 +171,8 @@ class CouponApplicationServiceIntegrationTest {
 
 			// then
 			assertThat(result).isNotNull()
-				.extracting("couponId", "name", "discountAmount")
-				.containsExactly(coupon.getId(), couponName, discountAmount);
+				.extracting("couponId", "name", "discountType", "discountValue")
+				.containsExactly(coupon.getId(), couponName, DiscountType.FIXED.name(), discountValue);
 
 			assertThat(coupon.getQuantity()).isEqualTo(couponQuantity.getQuantity());
 		}
@@ -182,7 +185,6 @@ class CouponApplicationServiceIntegrationTest {
 				.name("쿠폰1")
 				.issueLimit(30)
 				.quantity(30)
-				.discountAmount(1000)
 				.build());
 
 			final CouponIssueRequest request = CouponIssueRequest.builder()
@@ -222,7 +224,6 @@ class CouponApplicationServiceIntegrationTest {
 				.name("쿠폰1")
 				.issueLimit(30)
 				.quantity(30)
-				.discountAmount(1000)
 				.build());
 
 			final CouponIssueRequest request = CouponIssueRequest.builder()
@@ -246,13 +247,11 @@ class CouponApplicationServiceIntegrationTest {
 			final String couponName = "쿠폰1";
 			final int issueLimit = 30;
 			final int quantity = 0;
-			final int discountAmount = 1000;
 
 			final Coupon coupon = couponJpaRepository.save(Coupon.builder()
 				.name(couponName)
 				.issueLimit(issueLimit)
 				.quantity(quantity)
-				.discountAmount(discountAmount)
 				.build());
 
 			couponQuantityJpaRepository.save(CouponQuantity.builder()

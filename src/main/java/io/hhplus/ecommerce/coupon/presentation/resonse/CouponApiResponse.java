@@ -25,8 +25,11 @@ public class CouponApiResponse {
 	@Schema(description = "발급 가능 수량", example = "10")
 	private final int quantity;
 
-	@Schema(description = "할인금액", example = "1000")
-	private final int discountAmount;
+	@Schema(description = "할인 정책", example = "FIXED")
+	private final String discountType;
+
+	@Schema(description = "할인양", example = "1000")
+	private final int discountValue;
 
 	public static CouponApiResponse from(final CouponResponse couponResponse) {
 		return CouponApiResponse.builder()
@@ -34,7 +37,8 @@ public class CouponApiResponse {
 			.name(couponResponse.getName())
 			.issueLimit(couponResponse.getIssueLimit())
 			.quantity(couponResponse.getQuantity())
-			.discountAmount(couponResponse.getDiscountAmount())
+			.discountType(couponResponse.getDiscountType())
+			.discountValue(couponResponse.getDiscountValue())
 			.build();
 	}
 }

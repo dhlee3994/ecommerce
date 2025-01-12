@@ -66,15 +66,16 @@ CREATE TABLE PAYMENT (
 ) COMMENT '결제 테이블';
 
 CREATE TABLE COUPON (
-    id              BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-    name            VARCHAR(100)      NOT NULL COMMENT '쿠폰명',
-    issue_limit     INT UNSIGNED      NOT NULL COMMENT '쿠폰 최대 발급 수량',
-    quantity        INT UNSIGNED      NOT NULL COMMENT '발급 가능한 쿠폰 수량(조회 성능을 위해 컬럼으로 추가했으며, coupon_quantity테이블에서 수량을 관리한다.)',
-    discount_amount SMALLINT UNSIGNED NOT NULL COMMENT '할인 금액',
-    expired_at      TIMESTAMP(2)      NOT NULL COMMENT '쿠폰 만료일',
-    created_at      TIMESTAMP(2)      NOT NULL DEFAULT CURRENT_TIMESTAMP(2),
-    updated_at      TIMESTAMP(2)      NOT NULL DEFAULT CURRENT_TIMESTAMP(2),
-    deleted_at      TIMESTAMP(2)
+    id             BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    name           VARCHAR(100)       NOT NULL COMMENT '쿠폰명',
+    issue_limit    INT UNSIGNED       NOT NULL COMMENT '쿠폰 최대 발급 수량',
+    quantity       INT UNSIGNED       NOT NULL COMMENT '발급 가능한 쿠폰 수량(조회 성능을 위해 컬럼으로 추가했으며, coupon_quantity테이블에서 수량을 관리한다.)',
+    discount_type  VARCHAR(20)        NOT NULL COMMENT '할인 타입(FIXED: 정액 / RATE: 정률)',
+    discount_value MEDIUMINT UNSIGNED NOT NULL COMMENT '할인양(FIXED: 정액 할인 금액 / RATE: 정률 할인 비율)',
+    expired_at     TIMESTAMP(2)       NOT NULL COMMENT '쿠폰 만료일',
+    created_at     TIMESTAMP(2)       NOT NULL DEFAULT CURRENT_TIMESTAMP(2),
+    updated_at     TIMESTAMP(2)       NOT NULL DEFAULT CURRENT_TIMESTAMP(2),
+    deleted_at     TIMESTAMP(2)
 ) COMMENT '쿠폰 테이블';
 
 CREATE TABLE COUPON_QUANTITY (
@@ -91,7 +92,7 @@ CREATE TABLE ISSUED_COUPON (
     coupon_id      BIGINT UNSIGNED    NOT NULL COMMENT '쿠폰 아이디',
     user_id        BIGINT UNSIGNED    NOT NULL COMMENT '사용자 아이디',
     order_id       BIGINT UNSIGNED    NOT NULL COMMENT '주문 아이디',
-    discount_type  varchar(20)        NOT NULL COMMENT '할인 타입(FIXED: 정액 / RATE: 정률)',
+    discount_type  VARCHAR(20)        NOT NULL COMMENT '할인 타입(FIXED: 정액 / RATE: 정률)',
     discount_value MEDIUMINT UNSIGNED NOT NULL COMMENT '할인양(FIXED: 정액 할인 금액 / RATE: 정률 할인 비율)',
     issued_at      TIMESTAMP(2)       NOT NULL DEFAULT CURRENT_TIMESTAMP(2) COMMENT '쿠폰 발급일',
     expired_at     TIMESTAMP(2)       NOT NULL COMMENT '쿠폰 만료일',

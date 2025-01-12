@@ -6,6 +6,8 @@ import static io.hhplus.ecommerce.global.exception.ErrorCode.COUPON_IS_EXPIRED;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,18 +36,26 @@ public class IssuedCoupon extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(nullable = false)
 	private Long userId;
 
+	@Column(nullable = false)
 	private Long couponId;
 
+	@Column
 	private Long orderId;
 
+	@Enumerated(EnumType.STRING)
+	@Column(length = 20, nullable = false)
 	private DiscountType discountType;
 
+	@Column(nullable = false)
 	private int discountValue;
 
+	@Column(nullable = false)
 	private LocalDateTime expiredAt;
 
+	@Column
 	private LocalDateTime usedAt;
 
 	@Builder

@@ -4,6 +4,7 @@ import static io.hhplus.ecommerce.global.exception.ErrorCode.CHARGE_POINT_SHOULD
 import static io.hhplus.ecommerce.global.exception.ErrorCode.POINT_IS_NOT_ENOUGH;
 import static io.hhplus.ecommerce.global.exception.ErrorCode.POINT_SHOULD_BE_POSITIVE;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,8 +28,10 @@ public class Point {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(nullable = false)
 	private Long userId;
 
+	@Column(nullable = false)
 	private int point;
 
 	@Builder

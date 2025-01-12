@@ -16,14 +16,16 @@ public class IssuedCouponResponse {
 
 	private final long couponId;
 	private final String name;
-	private final int discountAmount;
+	private final String discountType;
+	private final int discountValue;
 	private final LocalDateTime expiredAt;
 
 	public static IssuedCouponResponse of(final Coupon coupon, final IssuedCoupon issuedCoupon) {
 		return IssuedCouponResponse.builder()
 			.couponId(coupon.getId())
 			.name(coupon.getName())
-			.discountAmount(coupon.getDiscountAmount())
+			.discountType(issuedCoupon.getDiscountType().name())
+			.discountValue(issuedCoupon.getDiscountValue())
 			.expiredAt(issuedCoupon.getExpiredAt())
 			.build();
 	}

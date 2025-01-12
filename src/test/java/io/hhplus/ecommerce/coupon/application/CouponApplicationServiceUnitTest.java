@@ -25,6 +25,7 @@ import io.hhplus.ecommerce.coupon.domain.CouponIssuer;
 import io.hhplus.ecommerce.coupon.domain.CouponQuantity;
 import io.hhplus.ecommerce.coupon.domain.CouponQuantityRepository;
 import io.hhplus.ecommerce.coupon.domain.CouponRepository;
+import io.hhplus.ecommerce.coupon.domain.DiscountType;
 import io.hhplus.ecommerce.coupon.domain.IssuedCoupon;
 import io.hhplus.ecommerce.coupon.domain.IssuedCouponRepository;
 import io.hhplus.ecommerce.global.exception.EcommerceException;
@@ -32,6 +33,7 @@ import io.hhplus.ecommerce.global.exception.ErrorCode;
 import io.hhplus.ecommerce.global.exception.InvalidRequestException;
 import io.hhplus.ecommerce.user.domain.User;
 import io.hhplus.ecommerce.user.domain.UserRepository;
+import io.hhplus.ecommerce.util.EntityIdSetter;
 
 @ExtendWith(MockitoExtension.class)
 class CouponApplicationServiceUnitTest {
@@ -62,31 +64,32 @@ class CouponApplicationServiceUnitTest {
 		@Test
 		void getCouponById() throws Exception {
 			// given
-			final Long id = 1L;
+			final Long couponId = 1L;
 
 			final String name = "쿠폰1";
 			final int issueLimit = 30;
 			final int quantity = 30;
-			final int discountAmount = 1000;
+			final int discountValue = 1000;
 
 			final Coupon coupon = Coupon.builder()
-				.id(id)
 				.name(name)
 				.issueLimit(issueLimit)
 				.quantity(quantity)
-				.discountAmount(discountAmount)
+				.discountType(DiscountType.FIXED)
+				.discountValue(discountValue)
 				.build();
 
-			given(couponRepository.findById(id))
+			EntityIdSetter.setId(coupon, couponId);
+			given(couponRepository.findById(couponId))
 				.willReturn(Optional.of(coupon));
 
 			// when
-			final CouponResponse result = couponApplicationService.getCoupon(id);
+			final CouponResponse result = couponApplicationService.getCoupon(couponId);
 
 			// then
 			assertThat(result).isNotNull()
-				.extracting("name", "issueLimit", "quantity", "discountAmount")
-				.containsExactly(name, issueLimit, quantity, discountAmount);
+				.extracting("name", "issueLimit", "quantity", "discountValue")
+				.containsExactly(name, issueLimit, quantity, discountValue);
 		}
 
 		@DisplayName("조회하려는 쿠폰 아이디가 Null이면 InvalidRequestException이 발생한다.")
@@ -160,17 +163,18 @@ class CouponApplicationServiceUnitTest {
 			final String couponName = "쿠폰1";
 			final int issueLimit = 30;
 			final int quantity = 30;
-			final int discountAmount = 1000;
+			final int discountValue = 1000;
 
 			final Long couponId = 1L;
 			final Coupon coupon = Coupon.builder()
-				.id(couponId)
 				.name(couponName)
 				.issueLimit(issueLimit)
 				.quantity(quantity)
-				.discountAmount(discountAmount)
+				.discountType(DiscountType.FIXED)
+				.discountValue(discountValue)
 				.build();
 
+			EntityIdSetter.setId(coupon, couponId);
 			given(couponRepository.findById(anyLong()))
 				.willReturn(Optional.of(coupon));
 
@@ -190,6 +194,8 @@ class CouponApplicationServiceUnitTest {
 			final IssuedCoupon issuedCoupon = IssuedCoupon.builder()
 				.userId(user.getId())
 				.couponId(coupon.getId())
+				.discountType(DiscountType.FIXED)
+				.discountValue(discountValue)
 				.expiredAt(coupon.getExpiredAt())
 				.build();
 
@@ -204,8 +210,8 @@ class CouponApplicationServiceUnitTest {
 
 			// then
 			assertThat(result).isNotNull()
-				.extracting("couponId", "name", "discountAmount")
-				.containsExactly(coupon.getId(), couponName, discountAmount);
+				.extracting("couponId", "name", "discountValue")
+				.containsExactly(coupon.getId(), couponName, discountValue);
 
 			assertThat(coupon.getQuantity()).isEqualTo(couponQuantity.getQuantity());
 		}
@@ -284,9 +290,10 @@ class CouponApplicationServiceUnitTest {
 			final long couponId = 1L;
 			final int quantity = 0;
 			final Coupon coupon = Coupon.builder()
-				.id(couponId)
 				.quantity(quantity)
 				.build();
+
+			EntityIdSetter.setId(coupon, couponId);
 			given(couponRepository.findById(anyLong()))
 				.willReturn(Optional.of(coupon));
 

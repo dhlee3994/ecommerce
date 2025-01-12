@@ -15,7 +15,8 @@ public class CouponResponse {
 	private final String name;
 	private final int issueLimit;
 	private final int quantity;
-	private final int discountAmount;
+	private final String discountType;
+	private final int discountValue;
 
 	public static CouponResponse from(final Coupon coupon) {
 		return CouponResponse.builder()
@@ -23,7 +24,8 @@ public class CouponResponse {
 			.name(coupon.getName())
 			.issueLimit(coupon.getIssueLimit())
 			.quantity(coupon.getQuantity())
-			.discountAmount(coupon.getDiscountAmount())
+			.discountType(coupon.getDiscountType().name())
+			.discountValue(coupon.getDiscountValue())
 			.build();
 	}
 }

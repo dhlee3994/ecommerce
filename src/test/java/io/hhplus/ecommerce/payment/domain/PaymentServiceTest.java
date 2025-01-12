@@ -13,11 +13,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import io.hhplus.ecommerce.coupon.domain.DiscountType;
 import io.hhplus.ecommerce.coupon.domain.IssuedCoupon;
 import io.hhplus.ecommerce.global.exception.EcommerceException;
 import io.hhplus.ecommerce.order.domain.Order;
 import io.hhplus.ecommerce.order.domain.OrderStatus;
+import io.hhplus.ecommerce.payment.domain.discount.DiscountCalculator;
+import io.hhplus.ecommerce.payment.domain.discount.DiscountPolicyFactory;
+import io.hhplus.ecommerce.payment.domain.discount.FixedDiscountPolicy;
+import io.hhplus.ecommerce.payment.domain.discount.NoneDiscountPolicy;
+import io.hhplus.ecommerce.payment.domain.discount.RateDiscountPolicy;
 import io.hhplus.ecommerce.point.domain.Point;
+import io.hhplus.ecommerce.util.EntityIdSetter;
 
 class PaymentServiceTest {
 
@@ -25,32 +32,36 @@ class PaymentServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		paymentService = new PaymentService();
+		final DiscountPolicyFactory discountPolicyFactory = new DiscountPolicyFactory(
+			new NoneDiscountPolicy(),
+			new FixedDiscountPolicy(),
+			new RateDiscountPolicy()
+		);
+		final DiscountCalculator discountCalculator = new DiscountCalculator(discountPolicyFactory);
+
+		paymentService = new PaymentService(discountCalculator);
 	}
 
-	@DisplayName("주문, 보유 포인트, 쿠폰으로 결제할 수 있다.")
+	@DisplayName("쿠폰을 적용하지 않으면 주문 총 금액을 결제한다.")
 	@Test
-	void pay() throws Exception {
+	void payWithNoCoupon() throws Exception {
 		// given
+		final Long orderId = 1L;
 		final int amount = 1000;
 		final Order order = Order.builder()
 			.amount(amount)
 			.status(OrderStatus.ORDERED)
 			.build();
+		EntityIdSetter.setId(order, orderId);
 
 		final int pointHeld = 10000;
 		final Point point = Point.builder()
 			.point(pointHeld)
 			.build();
 
-		final int discountAmount = 100;
-		final IssuedCoupon issuedCoupon = IssuedCoupon.builder()
-			.discountAmount(discountAmount)
-			.expiredAt(LocalDateTime.now().plusDays(1))
-			.usedAt(null)
-			.build();
+		final IssuedCoupon issuedCoupon = IssuedCoupon.emptyCoupon();
 
-		final int paymentAmount = amount - discountAmount;
+		final int paymentAmount = amount;
 		final int expectedPointHeld = pointHeld - paymentAmount;
 
 		// when
@@ -60,6 +71,90 @@ class PaymentServiceTest {
 		assertThat(result.getAmount()).isEqualTo(paymentAmount);
 		assertThat(point.getPoint()).isEqualTo(expectedPointHeld);
 		assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
+
+		assertThat(issuedCoupon.getOrderId()).isEqualTo(orderId);
+		assertThat(issuedCoupon.getUsedAt()).isNotNull();
+	}
+
+	@DisplayName("정액할인 쿠폰으로 결제하면 쿠폰에 명시된 할인양만큼 차감된 금액으로 결제한다.")
+	@Test
+	void payWithFixedCoupon() throws Exception {
+		// given
+		final Long orderId = 1L;
+		final int amount = 1000;
+		final Order order = Order.builder()
+			.amount(amount)
+			.status(OrderStatus.ORDERED)
+			.build();
+		EntityIdSetter.setId(order, orderId);
+
+		final int pointHeld = 10000;
+		final Point point = Point.builder()
+			.point(pointHeld)
+			.build();
+
+		final DiscountType discountType = DiscountType.FIXED;
+		final int discountValue = 1000;
+		final IssuedCoupon issuedCoupon = IssuedCoupon.builder()
+			.discountType(discountType)
+			.discountValue(discountValue)
+			.expiredAt(LocalDateTime.now().plusDays(1))
+			.usedAt(null)
+			.build();
+
+		final int paymentAmount = amount - discountValue;
+		final int expectedPointHeld = pointHeld - paymentAmount;
+
+		// when
+		final Payment result = paymentService.pay(order, point, issuedCoupon);
+
+		// then
+		assertThat(result.getAmount()).isEqualTo(paymentAmount);
+		assertThat(point.getPoint()).isEqualTo(expectedPointHeld);
+		assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
+
+		assertThat(issuedCoupon.getOrderId()).isEqualTo(orderId);
+		assertThat(issuedCoupon.getUsedAt()).isNotNull();
+	}
+
+	@DisplayName("정률할인 쿠폰으로 결제하면 쿠폰에 명시된 할인비율만큼 차감된 금액으로 결제한다.")
+	@Test
+	void payWithRateCoupon() throws Exception {
+		// given
+		final Long orderId = 1L;
+		final int amount = 10000;
+		final Order order = Order.builder()
+			.amount(amount)
+			.status(OrderStatus.ORDERED)
+			.build();
+		EntityIdSetter.setId(order, orderId);
+
+		final int pointHeld = 10000;
+		final Point point = Point.builder()
+			.point(pointHeld)
+			.build();
+
+		final DiscountType discountType = DiscountType.RATE;
+		final int discountValue = 15;
+		final IssuedCoupon issuedCoupon = IssuedCoupon.builder()
+			.discountType(discountType)
+			.discountValue(discountValue)
+			.expiredAt(LocalDateTime.now().plusDays(1))
+			.usedAt(null)
+			.build();
+
+		final int paymentAmount = 8500;
+		final int expectedPointHeld = pointHeld - paymentAmount;
+
+		// when
+		final Payment result = paymentService.pay(order, point, issuedCoupon);
+
+		// then
+		assertThat(result.getAmount()).isEqualTo(paymentAmount);
+		assertThat(point.getPoint()).isEqualTo(expectedPointHeld);
+		assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
+
+		assertThat(issuedCoupon.getOrderId()).isEqualTo(orderId);
 		assertThat(issuedCoupon.getUsedAt()).isNotNull();
 	}
 
@@ -78,9 +173,10 @@ class PaymentServiceTest {
 			.point(pointHeld)
 			.build();
 
-		final int discountAmount = 100;
+		final int discountValue = 100;
 		final IssuedCoupon issuedCoupon = IssuedCoupon.builder()
-			.discountAmount(discountAmount)
+			.discountType(DiscountType.FIXED)
+			.discountValue(discountValue)
 			.expiredAt(LocalDateTime.now().minusMinutes(1))
 			.usedAt(null)
 			.build();
@@ -106,9 +202,10 @@ class PaymentServiceTest {
 			.point(pointHeld)
 			.build();
 
-		final int discountAmount = 100;
+		final int discountValue = 100;
 		final IssuedCoupon issuedCoupon = IssuedCoupon.builder()
-			.discountAmount(discountAmount)
+			.discountType(DiscountType.FIXED)
+			.discountValue(discountValue)
 			.expiredAt(LocalDateTime.now().plusDays(1))
 			.usedAt(LocalDateTime.now().minusMinutes(1))
 			.build();
@@ -134,9 +231,10 @@ class PaymentServiceTest {
 			.point(pointHeld)
 			.build();
 
-		final int discountAmount = 100;
+		final int discountValue = 100;
 		final IssuedCoupon issuedCoupon = IssuedCoupon.builder()
-			.discountAmount(discountAmount)
+			.discountType(DiscountType.FIXED)
+			.discountValue(discountValue)
 			.expiredAt(LocalDateTime.now().plusDays(1))
 			.usedAt(null)
 			.build();
@@ -162,9 +260,10 @@ class PaymentServiceTest {
 			.point(pointHeld)
 			.build();
 
-		final int discountAmount = 100;
+		final int discountValue = 100;
 		final IssuedCoupon issuedCoupon = IssuedCoupon.builder()
-			.discountAmount(discountAmount)
+			.discountType(DiscountType.FIXED)
+			.discountValue(discountValue)
 			.expiredAt(LocalDateTime.now().plusDays(1))
 			.usedAt(null)
 			.build();

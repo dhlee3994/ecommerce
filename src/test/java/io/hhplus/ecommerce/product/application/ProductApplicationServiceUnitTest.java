@@ -32,6 +32,7 @@ import io.hhplus.ecommerce.product.domain.BestProduct;
 import io.hhplus.ecommerce.product.domain.Product;
 import io.hhplus.ecommerce.product.domain.ProductRepository;
 import io.hhplus.ecommerce.product.domain.spec.ProductSearchSpec;
+import io.hhplus.ecommerce.util.EntityIdSetter;
 
 @ExtendWith(MockitoExtension.class)
 class ProductApplicationServiceUnitTest {
@@ -50,7 +51,7 @@ class ProductApplicationServiceUnitTest {
 		@Test
 		void getProductsByName() {
 			// given
-			final long id = 1L;
+			final long productId = 1L;
 			final String name = "상품1";
 			final int price = 1000;
 			final int quantity = 10;
@@ -61,12 +62,11 @@ class ProductApplicationServiceUnitTest {
 
 			final Pageable pageable = PageRequest.of(0, 10);
 
-			final List<Product> content = List.of(
-				Product.builder().id(id).name(name).price(price).quantity(quantity).build()
-			);
+			final Product product = Product.builder().name(name).price(price).quantity(quantity).build();
+			EntityIdSetter.setId(product, productId);
 
 			given(productRepository.getProducts(any(ProductSearchSpec.class), any(Pageable.class)))
-				.willReturn(new PageImpl<>(content, pageable, 1));
+				.willReturn(new PageImpl<>(List.of(product), pageable, 1));
 
 			// when
 			final Page<ProductResponse> result = productApplicationService.getProducts(request, pageable);
@@ -75,7 +75,7 @@ class ProductApplicationServiceUnitTest {
 			assertThat(result.getContent()).hasSize(1)
 				.extracting("id", "name", "price", "quantity")
 				.containsExactly(
-					tuple(id, name, price, quantity)
+					tuple(productId, name, price, quantity)
 				);
 			assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
 			assertThat(result.getPageable().getPageSize()).isEqualTo(10);
@@ -93,23 +93,28 @@ class ProductApplicationServiceUnitTest {
 
 			final Pageable pageable = PageRequest.of(0, 10);
 
-			final List<Product> content = List.of(
-				Product.builder().id(1L).name(name + "1").price(1000).quantity(10).build(),
-				Product.builder().id(2L).name(name + "2").price(2000).quantity(20).build()
-			);
+			final long productIdA = 1L;
+			final Product productA = Product.builder().name(name + "1").price(1000).quantity(10).build();
+
+			final long productIdB = 2L;
+			final Product productB = Product.builder().name(name + "2").price(2000).quantity(20).build();
+
+			EntityIdSetter.setId(productA, productIdA);
+			EntityIdSetter.setId(productB, productIdB);
 
 			given(productRepository.getProducts(any(ProductSearchSpec.class), any(Pageable.class)))
-				.willReturn(new PageImpl<>(content, pageable, 1));
+				.willReturn(new PageImpl<>(List.of(productA, productB), pageable, 1));
 
 			// when
 			final Page<ProductResponse> result = productApplicationService.getProducts(request, pageable);
 
 			// then
+
 			assertThat(result.getContent()).hasSize(2)
 				.extracting("id", "name", "price", "quantity")
 				.containsExactlyInAnyOrder(
-					tuple(1L, name + "1", 1000, 10),
-					tuple(2L, name + "2", 2000, 20)
+					tuple(productIdA, name + "1", 1000, 10),
+					tuple(productIdB, name + "2", 2000, 20)
 				);
 			assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
 			assertThat(result.getPageable().getPageSize()).isEqualTo(10);
@@ -150,23 +155,23 @@ class ProductApplicationServiceUnitTest {
 		@Test
 		void getProductById() {
 			// given
-			final long id = 1L;
+			final long productId = 1L;
 			final String name = "상품1";
 			final int price = 1000;
 			final int quantity = 10;
 
 			final Product product = Product.builder()
-				.id(id)
 				.name(name)
 				.price(price)
 				.quantity(quantity)
 				.build();
 
-			given(productRepository.findById(id))
+			EntityIdSetter.setId(product, productId);
+			given(productRepository.findById(productId))
 				.willReturn(Optional.of(product));
 
 			// when
-			final ProductResponse result = productApplicationService.getProduct(id);
+			final ProductResponse result = productApplicationService.getProduct(productId);
 
 			// then
 			assertThat(result).isNotNull()

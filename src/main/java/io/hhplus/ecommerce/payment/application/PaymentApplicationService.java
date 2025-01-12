@@ -1,5 +1,6 @@
 package io.hhplus.ecommerce.payment.application;
 
+import static io.hhplus.ecommerce.global.exception.ErrorCode.COUPON_NOT_FOUND;
 import static io.hhplus.ecommerce.global.exception.ErrorCode.ORDER_NOT_FOUND;
 import static io.hhplus.ecommerce.global.exception.ErrorCode.POINT_NOT_FOUND;
 import static io.hhplus.ecommerce.global.exception.ErrorCode.USER_NOT_FOUND;
@@ -54,9 +55,10 @@ public class PaymentApplicationService {
 		order.validate();
 
 		// 비관적락
-		final IssuedCoupon issuedCoupon =
-			issuedCouponRepository.findByCouponIdAndUserIdForUpdate(request.getCouponId(), request.getUserId())
-				.orElseThrow(() -> new EntityNotFoundException(POINT_NOT_FOUND.getMessage()));
+		final IssuedCoupon issuedCoupon = request.getCouponId() == null
+			? IssuedCoupon.emptyCoupon()
+			: issuedCouponRepository.findByCouponIdAndUserIdForUpdate(request.getCouponId(), request.getUserId())
+			.orElseThrow(() -> new EntityNotFoundException(COUPON_NOT_FOUND.getMessage()));
 
 		// 비관적락
 		final Point point = pointRepository.findByUserIdForUpdate(request.getUserId())

@@ -21,9 +21,6 @@ public class IssuedCouponRepositoryImpl implements IssuedCouponRepository {
 
 	@Override
 	public Optional<IssuedCoupon> findByCouponIdAndUserIdForUpdate(final Long couponId, final Long userId) {
-		if (couponId == null) {
-			return Optional.of(IssuedCoupon.emptyCoupon());
-		}
 		return issuedCouponJpaRepository.findByCouponIdAndUserIdForUpdate(couponId, userId);
 	}
 }

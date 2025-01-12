@@ -21,8 +21,11 @@ public class IssuedCouponApiResponse {
 	@Schema(description = "쿠폰명", example = "쿠폰1")
 	private final String name;
 
-	@Schema(description = "할인금액", example = "1000")
-	private final int discountAmount;
+	@Schema(description = "할인 정책", example = "FIXED")
+	private final String discountType;
+
+	@Schema(description = "할인양", example = "1000")
+	private final int discountValue;
 
 	@Schema(description = "쿠폰 만료일", example = "2025-01-01 10:00:00")
 	private final LocalDateTime expiredAt;
@@ -31,7 +34,8 @@ public class IssuedCouponApiResponse {
 		return IssuedCouponApiResponse.builder()
 			.couponId(issuedCouponResponse.getCouponId())
 			.name(issuedCouponResponse.getName())
-			.discountAmount(issuedCouponResponse.getDiscountAmount())
+			.discountType(issuedCouponResponse.getDiscountType())
+			.discountValue(issuedCouponResponse.getDiscountValue())
 			.expiredAt(issuedCouponResponse.getExpiredAt())
 			.build();
 	}

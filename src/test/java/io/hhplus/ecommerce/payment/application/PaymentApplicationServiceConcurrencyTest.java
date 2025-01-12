@@ -17,6 +17,7 @@ import org.springframework.boot.testcontainers.context.ImportTestcontainers;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.utility.TestcontainersConfiguration;
 
+import io.hhplus.ecommerce.coupon.domain.DiscountType;
 import io.hhplus.ecommerce.coupon.domain.IssuedCoupon;
 import io.hhplus.ecommerce.coupon.infra.IssuedCouponJpaRepository;
 import io.hhplus.ecommerce.global.exception.EcommerceException;
@@ -67,7 +68,7 @@ class PaymentApplicationServiceConcurrencyTest {
 
 		final int pointHeld = 10000;
 		final int orderAmount = 1000;
-		final int discountAmount = 1000;
+		final int discountValue = 1000;
 
 		pointJpaRepository.save(Point.builder().userId(userId).point(pointHeld).build());
 
@@ -84,7 +85,8 @@ class PaymentApplicationServiceConcurrencyTest {
 			IssuedCoupon.builder()
 				.userId(userId)
 				.couponId(couponId)
-				.discountAmount(discountAmount)
+				.discountType(DiscountType.FIXED)
+				.discountValue(discountValue)
 				.expiredAt(LocalDateTime.now().plusDays(10))
 				.build()
 		);

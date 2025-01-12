@@ -32,11 +32,10 @@ public class Point {
 	private int point;
 
 	@Builder
-	private Point(final Long id, final Long userId, final int point) {
+	private Point(final Long userId, final int point) {
 		if (point < 0) {
 			throw new InvalidRequestException(POINT_SHOULD_BE_POSITIVE);
 		}
-		this.id = id;
 		this.userId = userId;
 		this.point = point;
 	}

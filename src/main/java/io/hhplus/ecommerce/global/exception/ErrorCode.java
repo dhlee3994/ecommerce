@@ -25,6 +25,7 @@ public enum ErrorCode {
 	STOCK_QUANTITY_NOT_ENOUGH("상품의 수량이 부족합니다."),
 
 	// 쿠폰
+	RATE_DISCOUNT_VALUE_OVER_100("할인 비율은 100%를 넘을 수 없습니다."),
 	COUPON_ID_SHOULD_BE_POSITIVE("올바르지 않은 쿠폰 아이디입니다."),
 	COUPON_NOT_FOUND("쿠폰을 조회할 수 없습니다."),
 	COUPON_QUANTITY_IS_NOT_ENOUGH("쿠폰 발급가능 수량이 부족합니다."),
@@ -36,6 +37,7 @@ public enum ErrorCode {
 	ORDER_QUANTITY_SHOULD_BE_POSITIVE("상품 주문 수량은 양수여야 합니다."),
 	ORDER_NOT_FOUND("주문을 조회할 수 없습니다."),
 	ORDER_ALREADY_PAID("해당 주문은 이미 결제가 완료되었습니다."),
+	DISCOUNT_AMOUNT_IS_LARGER_THAN_AMOUNT("할인 금액이 총 결제 금액보다 큽니다."),
 
 	;
 	private final String message;

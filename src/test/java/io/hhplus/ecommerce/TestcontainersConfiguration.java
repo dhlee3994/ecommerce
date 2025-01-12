@@ -19,6 +19,7 @@ class TestcontainersConfiguration {
 			.withUsername("ecommerce")
 			.withPassword("aa")
 			.withEnv("TZ", "UTC")
+			.withInitScript("init.sql")
 			.withReuse(true);
 
 		container.start();

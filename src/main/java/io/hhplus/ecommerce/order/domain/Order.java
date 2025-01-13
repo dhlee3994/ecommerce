@@ -3,7 +3,6 @@ package io.hhplus.ecommerce.order.domain;
 import static io.hhplus.ecommerce.global.exception.ErrorCode.DISCOUNT_AMOUNT_IS_LARGER_THAN_AMOUNT;
 import static io.hhplus.ecommerce.global.exception.ErrorCode.ORDER_ALREADY_PAID;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,14 +31,11 @@ public class Order extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
 	private Long userId;
 
-	@Column(nullable = false)
 	private int amount;
 
 	@Enumerated(EnumType.STRING)
-	@Column(length = 20, nullable = false)
 	private OrderStatus status;
 
 	@Builder

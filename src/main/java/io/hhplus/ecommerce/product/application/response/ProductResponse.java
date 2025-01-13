@@ -15,7 +15,6 @@ public class ProductResponse {
 	private final String name;
 	private final int price;
 	private final int quantity;
-	private final String status;
 
 	public static ProductResponse from(final Product product) {
 		return ProductResponse.builder()

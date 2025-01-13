@@ -4,54 +4,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.context.ImportTestcontainers;
-import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.utility.TestcontainersConfiguration;
 
+import io.hhplus.ecommerce.common.ServiceIntegrationTest;
 import io.hhplus.ecommerce.coupon.application.request.CouponIssueRequest;
 import io.hhplus.ecommerce.coupon.application.response.CouponResponse;
 import io.hhplus.ecommerce.coupon.application.response.IssuedCouponResponse;
 import io.hhplus.ecommerce.coupon.domain.Coupon;
 import io.hhplus.ecommerce.coupon.domain.CouponQuantity;
 import io.hhplus.ecommerce.coupon.domain.DiscountType;
-import io.hhplus.ecommerce.coupon.infra.CouponJpaRepository;
-import io.hhplus.ecommerce.coupon.infra.CouponQuantityJpaRepository;
 import io.hhplus.ecommerce.global.exception.EcommerceException;
 import io.hhplus.ecommerce.global.exception.ErrorCode;
 import io.hhplus.ecommerce.global.exception.InvalidRequestException;
 import io.hhplus.ecommerce.user.domain.User;
-import io.hhplus.ecommerce.user.infrastructure.UserJpaRepository;
 
-@ActiveProfiles("testcontainers")
-@ImportTestcontainers(TestcontainersConfiguration.class)
-@SpringBootTest
-class CouponApplicationServiceIntegrationTest {
-
-	@Autowired
-	private CouponApplicationService couponApplicationService;
-
-	@Autowired
-	private CouponJpaRepository couponJpaRepository;
-
-	@Autowired
-	private CouponQuantityJpaRepository couponQuantityJpaRepository;
-
-	@Autowired
-	private UserJpaRepository userJpaRepository;
-
-	@AfterEach
-	void tearDown() {
-		couponJpaRepository.deleteAllInBatch();
-		couponQuantityJpaRepository.deleteAllInBatch();
-		userJpaRepository.deleteAllInBatch();
-	}
+class CouponApplicationServiceIntegrationTest extends ServiceIntegrationTest {
 
 	@DisplayName("쿠폰 단건 조회")
 	@Nested
@@ -72,6 +43,7 @@ class CouponApplicationServiceIntegrationTest {
 				.quantity(quantity)
 				.discountType(DiscountType.FIXED)
 				.discountValue(discountValue)
+				.expiredAt(LocalDateTime.now().plusDays(1))
 				.build());
 
 			// when
@@ -154,6 +126,7 @@ class CouponApplicationServiceIntegrationTest {
 				.quantity(quantity)
 				.discountType(DiscountType.FIXED)
 				.discountValue(discountValue)
+				.expiredAt(LocalDateTime.now().plusDays(1))
 				.build());
 
 			final CouponQuantity couponQuantity = couponQuantityJpaRepository.save(CouponQuantity.builder()
@@ -185,6 +158,9 @@ class CouponApplicationServiceIntegrationTest {
 				.name("쿠폰1")
 				.issueLimit(30)
 				.quantity(30)
+				.discountType(DiscountType.FIXED)
+				.discountValue(1000)
+				.expiredAt(LocalDateTime.now().plusDays(1))
 				.build());
 
 			final CouponIssueRequest request = CouponIssueRequest.builder()
@@ -224,6 +200,9 @@ class CouponApplicationServiceIntegrationTest {
 				.name("쿠폰1")
 				.issueLimit(30)
 				.quantity(30)
+				.discountType(DiscountType.FIXED)
+				.discountValue(1000)
+				.expiredAt(LocalDateTime.now().plusDays(1))
 				.build());
 
 			final CouponIssueRequest request = CouponIssueRequest.builder()
@@ -252,6 +231,9 @@ class CouponApplicationServiceIntegrationTest {
 				.name(couponName)
 				.issueLimit(issueLimit)
 				.quantity(quantity)
+				.discountType(DiscountType.FIXED)
+				.discountValue(1000)
+				.expiredAt(LocalDateTime.now().plusDays(1))
 				.build());
 
 			couponQuantityJpaRepository.save(CouponQuantity.builder()

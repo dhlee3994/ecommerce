@@ -8,48 +8,19 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.context.ImportTestcontainers;
-import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.utility.TestcontainersConfiguration;
 
+import io.hhplus.ecommerce.common.ServiceIntegrationTest;
 import io.hhplus.ecommerce.coupon.application.request.CouponIssueRequest;
 import io.hhplus.ecommerce.coupon.domain.Coupon;
 import io.hhplus.ecommerce.coupon.domain.CouponQuantity;
 import io.hhplus.ecommerce.coupon.domain.DiscountType;
-import io.hhplus.ecommerce.coupon.infra.CouponJpaRepository;
-import io.hhplus.ecommerce.coupon.infra.CouponQuantityJpaRepository;
 import io.hhplus.ecommerce.global.exception.ErrorCode;
 import io.hhplus.ecommerce.user.domain.User;
-import io.hhplus.ecommerce.user.infrastructure.UserJpaRepository;
 
-@ActiveProfiles("testcontainers")
-@ImportTestcontainers(TestcontainersConfiguration.class)
-@SpringBootTest
-class CouponApplicationServiceConcurrencyTest {
 
-	@Autowired
-	private CouponApplicationService couponApplicationService;
-
-	@Autowired
-	private CouponJpaRepository couponJpaRepository;
-
-	@Autowired
-	private CouponQuantityJpaRepository couponQuantityJpaRepository;
-
-	@Autowired
-	private UserJpaRepository userJpaRepository;
-
-	@BeforeEach
-	void setUp() {
-		userJpaRepository.deleteAllInBatch();
-		couponJpaRepository.deleteAllInBatch();
-		couponQuantityJpaRepository.deleteAllInBatch();
-	}
+class CouponApplicationServiceConcurrencyTest extends ServiceIntegrationTest {
 
 	@DisplayName("쿠폰 발급 제한이 30개인 쿠폰을 40명이 동시에 발급 요청하면 30명만 발급 성공한다.")
 	@Test

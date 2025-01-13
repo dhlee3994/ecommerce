@@ -13,7 +13,7 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
@@ -40,3 +40,4 @@ springdoc:
       path: /docs
       tags-sorter: alpha
       operations-sorter: alpha
+

@@ -1,9 +1,6 @@
 package io.hhplus.ecommerce.coupon.domain;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,23 +28,16 @@ public class Coupon extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(length = 100, nullable = false)
 	private String name;
 
-	@Column(nullable = false)
 	private int issueLimit;
 
-	@Column(nullable = false)
 	private int quantity;
 
-	@Enumerated(EnumType.STRING)
-	@Column(length = 20, nullable = false)
 	private DiscountType discountType;
 
-	@Column(nullable = false)
 	private int discountValue;
 
-	@Column(nullable = false)
 	private LocalDateTime expiredAt;
 
 	@Builder

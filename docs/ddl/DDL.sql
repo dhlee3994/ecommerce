@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE USERS (
     id         BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     name       VARCHAR(50)  NOT NULL UNIQUE COMMENT '이름',
     created_at TIMESTAMP(2) NOT NULL DEFAULT CURRENT_TIMESTAMP(2),
@@ -6,7 +6,7 @@ CREATE TABLE users (
     deleted_at TIMESTAMP(2)
 ) COMMENT '사용자 테이블';
 
-CREATE TABLE point (
+CREATE TABLE POINT (
     id         BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     user_id    BIGINT UNSIGNED NOT NULL UNIQUE COMMENT '사용자 아이디',
     point      INT UNSIGNED    NOT NULL DEFAULT 0 COMMENT '사용자가 보유한 포인트',
@@ -15,7 +15,7 @@ CREATE TABLE point (
     deleted_at TIMESTAMP(2)
 ) COMMENT '사용자 보유 포인트 테이블';
 
-CREATE TABLE product (
+CREATE TABLE PRODUCT (
     id         BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     name       VARCHAR(100) NOT NULL COMMENT '상품명',
     price      INT UNSIGNED NOT NULL COMMENT '상품 가격',
@@ -25,7 +25,7 @@ CREATE TABLE product (
     deleted_at TIMESTAMP(2)
 ) COMMENT '상품 테이블';
 
-CREATE TABLE stock (
+CREATE TABLE STOCK (
     id         BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     product_id BIGINT UNSIGNED NOT NULL UNIQUE COMMENT '상품 아이디',
     quantity   INT UNSIGNED    NOT NULL DEFAULT 0 COMMENT '상품 재고',
@@ -34,7 +34,7 @@ CREATE TABLE stock (
     deleted_at TIMESTAMP(2)
 ) COMMENT '상품 재고 테이블';
 
-CREATE TABLE orders (
+CREATE TABLE ORDERS (
     id         BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     user_id    BIGINT UNSIGNED NOT NULL COMMENT '사용자 아이디',
     amount     INT UNSIGNED    NOT NULL COMMENT '주문 총 금액',
@@ -44,7 +44,7 @@ CREATE TABLE orders (
     deleted_at TIMESTAMP(2)
 ) COMMENT '상품 주문 테이블';
 
-CREATE TABLE order_item (
+CREATE TABLE ORDER_ITEM (
     id           BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     order_id     BIGINT UNSIGNED NOT NULL,
     product_id   BIGINT UNSIGNED NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE order_item (
     deleted_at   TIMESTAMP(2)
 ) COMMENT '상품 주문 상세 테이블';
 
-CREATE TABLE payment (
+CREATE TABLE PAYMENT (
     id         BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     order_id   BIGINT UNSIGNED NOT NULL,
     amount     INT UNSIGNED    NOT NULL COMMENT '결제 금액',
@@ -65,7 +65,7 @@ CREATE TABLE payment (
     deleted_at TIMESTAMP(2)
 ) COMMENT '결제 테이블';
 
-CREATE TABLE coupon (
+CREATE TABLE COUPON (
     id             BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     name           VARCHAR(100)       NOT NULL COMMENT '쿠폰명',
     issue_limit    INT UNSIGNED       NOT NULL COMMENT '쿠폰 최대 발급 수량',
@@ -78,7 +78,7 @@ CREATE TABLE coupon (
     deleted_at     TIMESTAMP(2)
 ) COMMENT '쿠폰 테이블';
 
-CREATE TABLE coupon_quantity (
+CREATE TABLE COUPON_QUANTITY (
     id         BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     coupon_id  BIGINT UNSIGNED NOT NULL COMMENT '쿠폰 아이디',
     quantity   INT UNSIGNED    NOT NULL COMMENT '발급 가능한 쿠폰 수량(최초에는 coupon.issue_limit와 동일하며 발급시마다 1씩 감소)',
@@ -87,7 +87,7 @@ CREATE TABLE coupon_quantity (
     deleted_at TIMESTAMP(2)
 ) COMMENT '쿠폰 발급 수량 테이블';
 
-CREATE TABLE issued_coupon (
+CREATE TABLE ISSUED_COUPON (
     id             BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     coupon_id      BIGINT UNSIGNED    NOT NULL COMMENT '쿠폰 아이디',
     user_id        BIGINT UNSIGNED    NOT NULL COMMENT '사용자 아이디',
@@ -97,6 +97,5 @@ CREATE TABLE issued_coupon (
     issued_at      TIMESTAMP(2)       NOT NULL DEFAULT CURRENT_TIMESTAMP(2) COMMENT '쿠폰 발급일',
     expired_at     TIMESTAMP(2)       NOT NULL COMMENT '쿠폰 만료일',
     used_at        TIMESTAMP(2) COMMENT '쿠폰 사용일',
-    updated_at     TIMESTAMP(2)       NOT NULL DEFAULT CURRENT_TIMESTAMP(2),
     deleted_at     TIMESTAMP(2)
 ) COMMENT '발급된 쿠폰 테이블';

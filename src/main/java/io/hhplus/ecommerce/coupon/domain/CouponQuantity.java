@@ -1,6 +1,5 @@
 package io.hhplus.ecommerce.coupon.domain;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,10 +27,8 @@ public class CouponQuantity extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
 	private Long couponId;
 
-	@Column(nullable = false)
 	private int quantity;
 
 	@Builder

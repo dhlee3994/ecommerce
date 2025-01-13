@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import jakarta.persistence.EntityNotFoundException;
-import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -73,7 +72,6 @@ class CouponApplicationServiceIntegrationTest {
 				.quantity(quantity)
 				.discountType(DiscountType.FIXED)
 				.discountValue(discountValue)
-				.expiredAt(LocalDateTime.now().plusDays(1))
 				.build());
 
 			// when
@@ -156,7 +154,6 @@ class CouponApplicationServiceIntegrationTest {
 				.quantity(quantity)
 				.discountType(DiscountType.FIXED)
 				.discountValue(discountValue)
-				.expiredAt(LocalDateTime.now().plusDays(1))
 				.build());
 
 			final CouponQuantity couponQuantity = couponQuantityJpaRepository.save(CouponQuantity.builder()
@@ -188,9 +185,6 @@ class CouponApplicationServiceIntegrationTest {
 				.name("쿠폰1")
 				.issueLimit(30)
 				.quantity(30)
-				.discountType(DiscountType.FIXED)
-				.discountValue(1000)
-				.expiredAt(LocalDateTime.now().plusDays(1))
 				.build());
 
 			final CouponIssueRequest request = CouponIssueRequest.builder()
@@ -230,9 +224,6 @@ class CouponApplicationServiceIntegrationTest {
 				.name("쿠폰1")
 				.issueLimit(30)
 				.quantity(30)
-				.discountType(DiscountType.FIXED)
-				.discountValue(1000)
-				.expiredAt(LocalDateTime.now().plusDays(1))
 				.build());
 
 			final CouponIssueRequest request = CouponIssueRequest.builder()
@@ -261,9 +252,6 @@ class CouponApplicationServiceIntegrationTest {
 				.name(couponName)
 				.issueLimit(issueLimit)
 				.quantity(quantity)
-				.discountType(DiscountType.FIXED)
-				.discountValue(1000)
-				.expiredAt(LocalDateTime.now().plusDays(1))
 				.build());
 
 			couponQuantityJpaRepository.save(CouponQuantity.builder()

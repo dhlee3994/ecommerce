@@ -9,6 +9,7 @@ public enum ErrorCode {
 
 	// 공통
 	INVALID_REQUEST("잘못된 요청입니다."),
+	INTERNAL_SERVER_ERROR("시스템 오류가 발생했습니다."),
 
 	// 유저
 	USER_NOT_FOUND("해당 유저가 존재하지 않습니다."),

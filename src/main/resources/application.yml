@@ -41,3 +41,5 @@ springdoc:
       tags-sorter: alpha
       operations-sorter: alpha
 
+cors:
+  allowed-origins: http://localhost:3000,http://localhost:4000

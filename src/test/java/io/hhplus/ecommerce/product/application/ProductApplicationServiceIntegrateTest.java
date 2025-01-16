@@ -230,6 +230,7 @@ class ProductApplicationServiceIntegrateTest extends ServiceIntegrationTest {
 
 				orderQuantities.add((long)i);
 			}
+			orderJpaRepository.flush();
 
 			// when
 			final List<BestProductResponse> result = productApplicationService.getBestProducts();

@@ -1,5 +1,6 @@
 package io.hhplus.ecommerce.global.filter;
 
+import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN;
@@ -46,6 +47,7 @@ class CorsFilterIntegrationTest extends IntegrationTest {
 			.andExpect(header().string(ACCESS_CONTROL_ALLOW_ORIGIN, allowedOrigin))
 			.andExpect(header().string(ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, PUT, DELETE, OPTIONS"))
 			.andExpect(header().string(ACCESS_CONTROL_ALLOW_HEADERS, "Content-Type, Authorization"))
+			.andExpect(header().string(ACCESS_CONTROL_ALLOW_CREDENTIALS, "true"))
 			.andExpect(header().string(ACCESS_CONTROL_MAX_AGE, "3600"))
 			.andDo(print());
 	}
@@ -60,6 +62,7 @@ class CorsFilterIntegrationTest extends IntegrationTest {
 			.andExpect(header().string(ACCESS_CONTROL_ALLOW_ORIGIN, allowedOrigin))
 			.andExpect(header().string(ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, PUT, DELETE, OPTIONS"))
 			.andExpect(header().string(ACCESS_CONTROL_ALLOW_HEADERS, "Content-Type, Authorization"))
+			.andExpect(header().string(ACCESS_CONTROL_ALLOW_CREDENTIALS, "true"))
 			.andExpect(header().string(ACCESS_CONTROL_MAX_AGE, "3600"))
 			.andDo(print());
 	}
@@ -76,6 +79,7 @@ class CorsFilterIntegrationTest extends IntegrationTest {
 			.andExpect(header().doesNotExist(ACCESS_CONTROL_ALLOW_ORIGIN))
 			.andExpect(header().string(ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, PUT, DELETE, OPTIONS"))
 			.andExpect(header().string(ACCESS_CONTROL_ALLOW_HEADERS, "Content-Type, Authorization"))
+			.andExpect(header().string(ACCESS_CONTROL_ALLOW_CREDENTIALS, "true"))
 			.andExpect(header().string(ACCESS_CONTROL_MAX_AGE, "3600"))
 			.andDo(print());
 	}

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN;
@@ -55,6 +56,7 @@ class CorsFilterUnitTest {
 		assertThat(response.getHeader(ACCESS_CONTROL_ALLOW_ORIGIN)).isEqualTo(ALLOWED_ORIGIN);
 		assertThat(response.getHeader(ACCESS_CONTROL_ALLOW_METHODS)).isEqualTo("GET, POST, PUT, DELETE, OPTIONS");
 		assertThat(response.getHeader(ACCESS_CONTROL_ALLOW_HEADERS)).isEqualTo("Content-Type, Authorization");
+		assertThat(response.getHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS)).isEqualTo("true");
 		assertThat(response.getHeader(ACCESS_CONTROL_MAX_AGE)).isEqualTo("3600");
 
 		verify(filterChain, never()).doFilter(request, response);
@@ -75,6 +77,7 @@ class CorsFilterUnitTest {
 		assertThat(response.getHeader(ACCESS_CONTROL_ALLOW_ORIGIN)).isEqualTo(ALLOWED_ORIGIN);
 		assertThat(response.getHeader(ACCESS_CONTROL_ALLOW_METHODS)).isEqualTo("GET, POST, PUT, DELETE, OPTIONS");
 		assertThat(response.getHeader(ACCESS_CONTROL_ALLOW_HEADERS)).isEqualTo("Content-Type, Authorization");
+		assertThat(response.getHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS)).isEqualTo("true");
 		assertThat(response.getHeader(ACCESS_CONTROL_MAX_AGE)).isEqualTo("3600");
 
 		verify(filterChain, times(1)).doFilter(request, response);
@@ -94,6 +97,7 @@ class CorsFilterUnitTest {
 		assertThat(response.getHeader(ACCESS_CONTROL_ALLOW_ORIGIN)).isNull();
 		assertThat(response.getHeader(ACCESS_CONTROL_ALLOW_METHODS)).isEqualTo("GET, POST, PUT, DELETE, OPTIONS");
 		assertThat(response.getHeader(ACCESS_CONTROL_ALLOW_HEADERS)).isEqualTo("Content-Type, Authorization");
+		assertThat(response.getHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS)).isEqualTo("true");
 		assertThat(response.getHeader(ACCESS_CONTROL_MAX_AGE)).isEqualTo("3600");
 
 		verify(filterChain, times(1)).doFilter(request, response);

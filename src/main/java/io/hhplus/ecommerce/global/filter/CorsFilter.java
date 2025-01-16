@@ -45,6 +45,7 @@ public class CorsFilter implements Filter {
 		response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
 		response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, PUT, DELETE, OPTIONS");
 		response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "Content-Type, Authorization");
+		response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
 		response.setHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, "3600");
 
 		if (isPreflightRequest(request)) {

@@ -12,8 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice
 public class ApiControllerAdvice {
 
-	@ExceptionHandler(InvalidRequestException.class)
-	public CommonApiResponse<Void> handleInvalidRequestException(final InvalidRequestException e) {
+	@ExceptionHandler(EcommerceException.class)
+	public CommonApiResponse<Void> handleEcommerceException(final EcommerceException e) {
 		log.error(e.getMessage(), e);
 		return CommonApiResponse.badRequest(e.getMessage());
 	}
@@ -22,5 +22,11 @@ public class ApiControllerAdvice {
 	public CommonApiResponse<Void> handleEntityNotFoundException(final EntityNotFoundException e) {
 		log.error(e.getMessage(), e);
 		return CommonApiResponse.badRequest(e.getMessage());
+	}
+
+	@ExceptionHandler(Exception.class)
+	public CommonApiResponse<Void> handleException(final Exception e) {
+		log.error(e.getMessage(), e);
+		return CommonApiResponse.error(ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
 	}
 }

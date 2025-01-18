@@ -35,4 +35,7 @@ public class CommonApiResponse<T> {
 	public static <T> CommonApiResponse<T> badRequest(final String message) {
 		return of(HttpStatus.BAD_REQUEST.value(), message, null);
 	}
+	public static <T> CommonApiResponse<T> error(final String message) {
+		return of(HttpStatus.INTERNAL_SERVER_ERROR.value(), message, null);
+	}
 }

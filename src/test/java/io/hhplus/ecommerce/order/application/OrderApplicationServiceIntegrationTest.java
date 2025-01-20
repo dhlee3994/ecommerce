@@ -134,4 +134,48 @@ class OrderApplicationServiceIntegrationTest extends ServiceIntegrationTest {
 			.isInstanceOf(EcommerceException.class)
 			.hasMessageContaining(ErrorCode.STOCK_QUANTITY_NOT_ENOUGH.getMessage());
 	}
+
+	@DisplayName("주문 생성 중 예외가 발생하면 차감되었던 재고가 원복된다.")
+	@Test
+	void orderWithQuantityRollback() throws Exception {
+		// given
+		final User user = userJpaRepository.save(User.builder().name("사용자").build());
+
+
+		final int orderQuantity = 10;
+
+		final int quantityOfProductA = orderQuantity + 100;
+		final Product productA = productJpaRepository.save(Product.builder().name("상품A").price(100).build());
+		final Stock stockA = stockJpaRepository.save(
+			Stock.builder().productId(productA.getId()).quantity(quantityOfProductA).build()
+		);
+
+		final int quantityOfProductB = orderQuantity - 1;
+		final Product productB = productJpaRepository.save(Product.builder().name("상품B").price(100).build());
+		final Stock stockB = stockJpaRepository.save(
+			Stock.builder().productId(productB.getId()).quantity(quantityOfProductB).build()
+		);
+
+		final OrderCreateRequest orderCreateRequest = OrderCreateRequest.builder()
+			.userId(user.getId())
+			.orderItems(List.of(
+				OrderItemCreateRequest.builder()
+					.productId(productA.getId())
+					.quantity(orderQuantity)
+					.build(),
+				OrderItemCreateRequest.builder()
+					.productId(productB.getId())
+					.quantity(orderQuantity)
+					.build()
+			))
+			.build();
+
+		// when & then
+		assertThatThrownBy(() -> orderApplicationService.order(orderCreateRequest))
+			.isInstanceOf(EcommerceException.class)
+			.hasMessageContaining(ErrorCode.STOCK_QUANTITY_NOT_ENOUGH.getMessage());
+
+		assertThat(stockJpaRepository.findById(stockA.getId()).get().getQuantity()).isEqualTo(quantityOfProductA);
+		assertThat(stockJpaRepository.findById(stockB.getId()).get().getQuantity()).isEqualTo(quantityOfProductB);
+	}
 }

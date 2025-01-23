@@ -9,9 +9,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,11 +40,6 @@ public class OrderApplicationService {
 
 	private final StockService stockService;
 
-	@Retryable(
-		retryFor = ObjectOptimisticLockingFailureException.class,
-		maxAttempts = 15,
-		backoff = @Backoff(delay = 100)
-	)
 	@Transactional
 	public OrderCreateResponse order(final OrderCreateRequest request) {
 		if (!userRepository.existsById(request.getUserId())) {

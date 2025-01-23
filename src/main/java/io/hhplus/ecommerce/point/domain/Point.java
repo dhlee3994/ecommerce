@@ -10,7 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Version;
 
 import io.hhplus.ecommerce.global.exception.EcommerceException;
 import io.hhplus.ecommerce.global.exception.InvalidRequestException;
@@ -34,9 +33,6 @@ public class Point {
 
 	@Column(nullable = false)
 	private int point;
-
-	@Version
-	private int version;
 
 	@Builder
 	private Point(final Long userId, final int point) {

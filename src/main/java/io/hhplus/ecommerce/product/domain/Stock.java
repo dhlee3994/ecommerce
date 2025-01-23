@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 import org.hibernate.annotations.SQLRestriction;
 
@@ -33,6 +34,9 @@ public class Stock extends BaseEntity {
 
 	@Column(nullable = false)
 	private int quantity;
+
+	@Version
+	private int version;
 
 	@Builder
 	private Stock(final Long productId, final int quantity) {

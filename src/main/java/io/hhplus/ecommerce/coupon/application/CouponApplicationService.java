@@ -5,6 +5,9 @@ import static io.hhplus.ecommerce.global.exception.ErrorCode.USER_NOT_FOUND;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +48,11 @@ public class CouponApplicationService {
 		return CouponResponse.from(coupon);
 	}
 
+	@Retryable(
+		retryFor = ObjectOptimisticLockingFailureException.class,
+		maxAttempts = 15,
+		backoff = @Backoff(delay = 100)
+	)
 	@Transactional
 	public IssuedCouponResponse issueCoupon(final CouponIssueRequest request) {
 

@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.SQLRestriction;
@@ -57,6 +58,9 @@ public class IssuedCoupon extends BaseEntity {
 
 	@Column
 	private LocalDateTime usedAt;
+
+	@Version
+	private int version;
 
 	@Builder
 	private IssuedCoupon(

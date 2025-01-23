@@ -10,6 +10,7 @@ import io.hhplus.ecommerce.order.application.OrderApplicationService;
 import io.hhplus.ecommerce.order.infra.OrderItemJpaRepository;
 import io.hhplus.ecommerce.order.infra.OrderJpaRepository;
 import io.hhplus.ecommerce.payment.application.PaymentApplicationService;
+import io.hhplus.ecommerce.payment.infra.PaymentJpaRepository;
 import io.hhplus.ecommerce.point.application.PointApplicationService;
 import io.hhplus.ecommerce.point.infra.PointJpaRepository;
 import io.hhplus.ecommerce.product.application.ProductApplicationService;
@@ -41,6 +42,10 @@ public abstract class ServiceIntegrationTest extends IntegrationTest {
 	protected IssuedCouponJpaRepository issuedCouponJpaRepository;
 	@Autowired
 	protected CouponQuantityJpaRepository couponQuantityJpaRepository;
+
+	// payment
+	@Autowired
+	protected PaymentJpaRepository paymentJpaRepository;
 
 	// order
 	@Autowired

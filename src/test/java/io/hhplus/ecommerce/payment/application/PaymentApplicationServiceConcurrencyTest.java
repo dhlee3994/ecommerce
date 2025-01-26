@@ -6,10 +6,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.test.context.ActiveProfiles;
 
 import io.hhplus.ecommerce.common.ServiceIntegrationTest;
 import io.hhplus.ecommerce.coupon.domain.DiscountType;
@@ -21,7 +28,66 @@ import io.hhplus.ecommerce.payment.application.request.PaymentRequest;
 import io.hhplus.ecommerce.point.domain.Point;
 import io.hhplus.ecommerce.user.domain.User;
 
+//@ActiveProfiles("optimistic-lock")
+@ActiveProfiles("pessimistic-lock")
 class PaymentApplicationServiceConcurrencyTest extends ServiceIntegrationTest {
+
+	private static final Logger log = LoggerFactory.getLogger(PaymentApplicationServiceConcurrencyTest.class);
+
+	@DisplayName("Lock의 유형별로 성능을 확인하기 위한 테스트이며, 하나의 결제를 동시에 X번 요청해도 결제는 1번만 성공한다.")
+	@RepeatedTest(6)
+	void paymentForReport() throws Exception {
+		// given
+		final User user = userJpaRepository.save(User.builder().name("사용자").build());
+		final Long userId = user.getId();
+
+		final int pointHeld = 10000;
+		final int orderAmount = 10000;
+		final int expectedBalance = pointHeld - orderAmount;
+
+		pointJpaRepository.save(Point.builder().userId(userId).point(pointHeld).build());
+
+		final Order order = orderJpaRepository.save(
+			Order.builder()
+				.userId(userId)
+				.amount(orderAmount)
+				.status(OrderStatus.ORDERED)
+				.build()
+		);
+
+		final PaymentRequest request = PaymentRequest.builder()
+			.orderId(order.getId())
+			.userId(userId)
+			.couponId(null)
+			.build();
+
+		final int tryCount = 5;
+		final ExecutorService executorService = Executors.newFixedThreadPool(20);
+		final CountDownLatch latch = new CountDownLatch(tryCount);
+
+		final long startTime = System.currentTimeMillis();
+
+		// when
+		for (int i = 1; i <= tryCount; i++) {
+			executorService.execute(() -> {
+				try {
+					paymentApplicationService.pay(request);
+				} finally {
+					latch.countDown();
+				}
+			});
+		}
+
+		latch.await();
+
+		final long tookTimeMills = System.currentTimeMillis() - startTime;
+		log.info("소요 시간: {}ms", tookTimeMills);
+
+		// then
+		assertThat(paymentJpaRepository.findAll().size()).isEqualTo(1);
+		assertThat(pointJpaRepository.findByUserId(userId).get().getPoint()).isEqualTo(expectedBalance);
+		assertThat(orderJpaRepository.findById(order.getId()).get().getStatus()).isEqualTo(OrderStatus.PAID);
+	}
 
 	@DisplayName("하나의 결제를 동시에 10번 요청해도 1번의 결제만 성공한다.")
 	@Test

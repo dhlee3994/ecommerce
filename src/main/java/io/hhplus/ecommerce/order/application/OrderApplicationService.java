@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +24,8 @@ import io.hhplus.ecommerce.order.domain.OrderRepository;
 import io.hhplus.ecommerce.product.domain.Product;
 import io.hhplus.ecommerce.product.domain.ProductRepository;
 import io.hhplus.ecommerce.product.domain.Stock;
-import io.hhplus.ecommerce.product.domain.StockService;
 import io.hhplus.ecommerce.product.domain.StockRepository;
+import io.hhplus.ecommerce.product.domain.StockService;
 import io.hhplus.ecommerce.user.domain.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -40,6 +43,11 @@ public class OrderApplicationService {
 
 	private final StockService stockService;
 
+	@Retryable(
+		retryFor = ObjectOptimisticLockingFailureException.class,
+		maxAttempts = 15,
+		backoff = @Backoff(delay = 100)
+	)
 	@Transactional
 	public OrderCreateResponse order(final OrderCreateRequest request) {
 		if (!userRepository.existsById(request.getUserId())) {

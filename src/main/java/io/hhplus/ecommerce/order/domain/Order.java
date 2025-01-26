@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 import org.hibernate.annotations.SQLRestriction;
 
@@ -41,6 +42,9 @@ public class Order extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	@Column(length = 20, nullable = false)
 	private OrderStatus status;
+
+	@Version
+	private int version;
 
 	@Builder
 	private Order(final Long userId, final int amount, final OrderStatus status) {

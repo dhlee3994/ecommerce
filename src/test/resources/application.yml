@@ -17,18 +17,3 @@ spring:
 
 cors:
   allowed-origins: http://localhost:3000,http://localhost:4000
----
-# test containers
-spring:
-  config:
-    activate:
-      on-profile: testcontainers
-  datasource:
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:mysql:8.4.3://ecommerce
-    username: ecommerce
-    password: aa
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    defer-datasource-initialization: true

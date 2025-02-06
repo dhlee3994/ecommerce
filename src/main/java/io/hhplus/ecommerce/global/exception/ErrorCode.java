@@ -33,6 +33,8 @@ public enum ErrorCode {
 	COUPON_ALREADY_ISSUED("이미 발급받은 쿠폰입니다."),
 	COUPON_IS_EXPIRED("만료된 쿠폰입니다."),
 	COUPON_ALREADY_USED("이미 사용한 쿠폰입니다."),
+	ALREADY_REQUESTED_COUPON("이미 발급 요청한 쿠폰입니다."),
+	COUPON_ISSUE_TOKEN_PARSING_ERROR("쿠폰발급 요청 중 오류가 발생했습니다."),
 
 	// 주문
 	ORDER_QUANTITY_SHOULD_BE_POSITIVE("상품 주문 수량은 양수여야 합니다."),

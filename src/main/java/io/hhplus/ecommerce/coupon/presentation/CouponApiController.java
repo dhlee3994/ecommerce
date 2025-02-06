@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import io.hhplus.ecommerce.coupon.application.CouponApplicationService;
 import io.hhplus.ecommerce.coupon.presentation.request.CouponIssueApiRequest;
 import io.hhplus.ecommerce.coupon.presentation.resonse.CouponApiResponse;
-import io.hhplus.ecommerce.coupon.presentation.resonse.IssuedCouponApiResponse;
 import io.hhplus.ecommerce.global.CommonApiResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -29,9 +28,7 @@ public class CouponApiController implements ICouponApiController {
 
 	@PostMapping("/issue")
 	@Override
-	public CommonApiResponse<IssuedCouponApiResponse> issueCoupon(@RequestBody final CouponIssueApiRequest request) {
-		return CommonApiResponse.ok(IssuedCouponApiResponse.from(
-			couponApplicationService.issueCoupon(request.toServiceRequest())
-		));
+	public void issueCoupon(@RequestBody final CouponIssueApiRequest request) {
+		couponApplicationService.requestIssueCoupon(request.toServiceRequest());
 	}
 }

@@ -28,6 +28,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.redisson:redisson-spring-boot-starter:3.43.0'
 
     // lombok
     compileOnly 'org.projectlombok:lombok'
@@ -38,9 +40,6 @@ dependencies {
 
     // swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
-
-    // p6spy
-    //implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.2'
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

@@ -24,6 +24,9 @@ spring:
         one-indexed-parameters: true
         max-page-size: 50
         default-page-size: 10
+    redis:
+      host: localhost
+      port: 6379
 
 springdoc:
   packages-to-scan: io.hhplus.ecommerce

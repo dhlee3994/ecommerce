@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
@@ -18,6 +19,7 @@ import io.hhplus.ecommerce.util.DataCleaner;
 public abstract class IntegrationTest {
 
 	private static final MySQLContainer<?> mysqlContainer;
+	private static final GenericContainer<?> redisContainer;
 
 	static {
 		mysqlContainer = new MySQLContainer<>(DockerImageName.parse("mysql:8.4.3"))
@@ -28,7 +30,12 @@ public abstract class IntegrationTest {
 			.withInitScript("init.sql")
 			.withReuse(true);
 
+		redisContainer = new GenericContainer<>(DockerImageName.parse("redis:7.4.2"))
+			.withExposedPorts(6379)
+			.withReuse(true);
+
 		mysqlContainer.start();
+		redisContainer.start();
 	}
 
 	@DynamicPropertySource
@@ -36,6 +43,9 @@ public abstract class IntegrationTest {
 		registry.add("spring.datasource.url", mysqlContainer::getJdbcUrl);
 		registry.add("spring.datasource.username", mysqlContainer::getUsername);
 		registry.add("spring.datasource.password", mysqlContainer::getPassword);
+
+		registry.add("spring.data.redis.host", redisContainer::getHost);
+		registry.add("spring.data.redis.port", redisContainer::getFirstMappedPort);
 	}
 
 	@Autowired

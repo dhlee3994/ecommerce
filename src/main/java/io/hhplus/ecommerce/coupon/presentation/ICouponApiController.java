@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import io.hhplus.ecommerce.coupon.presentation.request.CouponIssueApiRequest;
 import io.hhplus.ecommerce.coupon.presentation.resonse.CouponApiResponse;
-import io.hhplus.ecommerce.coupon.presentation.resonse.IssuedCouponApiResponse;
 import io.hhplus.ecommerce.global.CommonApiResponse;
 import io.hhplus.ecommerce.global.openapi.ApiFailResponse;
 import io.hhplus.ecommerce.global.openapi.ApiSuccessResponse;
@@ -35,7 +34,6 @@ public interface ICouponApiController {
 	CommonApiResponse<CouponApiResponse> getCoupon(@PathVariable Long couponId);
 
 	@ApiFailResponse("유효하지 않은 쿠폰입니다.")
-	@ApiSuccessResponse(IssuedCouponApiResponse.class)
 	@Operation(
 		summary = "쿠폰 발급",
 		description = "사용자가 쿠폰 아이디로 쿠폰을 발급한다.",
@@ -46,5 +44,5 @@ public interface ICouponApiController {
 		)
 	)
 	@PostMapping("/issue")
-	CommonApiResponse<IssuedCouponApiResponse> issueCoupon(@RequestBody CouponIssueApiRequest issueRequest);
+	void issueCoupon(@RequestBody CouponIssueApiRequest issueRequest);
 }

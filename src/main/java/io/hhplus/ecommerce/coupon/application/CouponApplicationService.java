@@ -13,6 +13,7 @@ import io.hhplus.ecommerce.coupon.application.response.CouponResponse;
 import io.hhplus.ecommerce.coupon.application.response.IssuedCouponResponse;
 import io.hhplus.ecommerce.coupon.domain.Coupon;
 import io.hhplus.ecommerce.coupon.domain.CouponIssuer;
+import io.hhplus.ecommerce.coupon.domain.CouponPublishRepository;
 import io.hhplus.ecommerce.coupon.domain.CouponQuantity;
 import io.hhplus.ecommerce.coupon.domain.CouponQuantityRepository;
 import io.hhplus.ecommerce.coupon.domain.CouponRepository;
@@ -35,6 +36,8 @@ public class CouponApplicationService {
 	private final UserRepository userRepository;
 	private final CouponIssuer couponIssuer;
 
+	private final CouponPublishRepository couponPublishRepository;
+
 	public CouponResponse getCoupon(final Long id) {
 		if (id == null || id <= 0) {
 			throw new InvalidRequestException(ErrorCode.COUPON_ID_SHOULD_BE_POSITIVE);
@@ -43,6 +46,28 @@ public class CouponApplicationService {
 		final Coupon coupon = couponRepository.findById(id)
 			.orElseThrow(() -> new EntityNotFoundException(COUPON_NOT_FOUND.getMessage()));
 		return CouponResponse.from(coupon);
+	}
+
+	public void requestIssueCoupon(final CouponIssueRequest request) {
+		final long userId = request.getUserId();
+		final long couponId = request.getCouponId();
+
+		// 레디스 재고 확인
+		final long couponCount = couponPublishRepository.getRemainingCouponCount(couponId);
+		if (couponCount <= 0) {
+			throw new EcommerceException(ErrorCode.COUPON_QUANTITY_IS_NOT_ENOUGH);
+		}
+
+		// 중복 확인
+		if (couponPublishRepository.isAlreadyIssue(userId, couponId)) {
+			throw new EcommerceException(ErrorCode.COUPON_ALREADY_ISSUED);
+		}
+
+		// 발급 대기열에 추가, 추후 스케줄러에서 발급처리(레디스의 쿠폰 재고 감소 및 쿠폰 발급 이력 저장)
+		final boolean addSuccess = couponPublishRepository.addCouponQueue(request.toToken());
+		if (!addSuccess) {
+			throw new EcommerceException(ErrorCode.ALREADY_REQUESTED_COUPON);
+		}
 	}
 
 	@Transactional

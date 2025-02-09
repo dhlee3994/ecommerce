@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Repository
-public class CouponRedisCacheRepository implements CouponPublishRepository {
+public class RedisCouponPublishRepository implements CouponPublishRepository {
 
 	private static final String COUPON_KEY_FORMAT = "coupon:issue:%d";
 	private static final String COUPON_ISSUED_USER_KEY_FORMAT = "coupon:issue:%d:user";

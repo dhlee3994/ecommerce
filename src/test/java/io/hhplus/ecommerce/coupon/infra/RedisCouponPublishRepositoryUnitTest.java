@@ -26,10 +26,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hhplus.ecommerce.coupon.domain.CouponIssueToken;
 
 @ExtendWith(MockitoExtension.class)
-class CouponRedisCacheRepositoryUnitTest {
+class RedisCouponPublishRepositoryUnitTest {
 
 	@InjectMocks
-	private CouponRedisCacheRepository couponRedisCacheRepository;
+	private RedisCouponPublishRepository redisCouponPublishRepository;
 
 	@Mock
 	private StringRedisTemplate redisTemplate;
@@ -53,12 +53,12 @@ class CouponRedisCacheRepositoryUnitTest {
 		final long remainingCount = 10;
 
 		final long couponId = 1L;
-		final String couponKey = couponRedisCacheRepository.getCouponKeyFormat().formatted(couponId);
+		final String couponKey = redisCouponPublishRepository.getCouponKeyFormat().formatted(couponId);
 		given(redisTemplate.opsForValue()).willReturn(valueOps);
 		given(valueOps.get(couponKey)).willReturn(String.valueOf(remainingCount));
 
 		// when
-		final long result = couponRedisCacheRepository.getRemainingCouponCount(couponId);
+		final long result = redisCouponPublishRepository.getRemainingCouponCount(couponId);
 
 		// then
 		assertThat(result).isEqualTo(remainingCount);
@@ -70,12 +70,12 @@ class CouponRedisCacheRepositoryUnitTest {
 		// given
 		final long userId = 1L;
 		final long couponId = 1L;
-		final String issuedUserKey = couponRedisCacheRepository.getCouponIssuedUserKeyFormat().formatted(couponId);
+		final String issuedUserKey = redisCouponPublishRepository.getCouponIssuedUserKeyFormat().formatted(couponId);
 		given(redisTemplate.opsForSet()).willReturn(setOps);
 		given(setOps.isMember(issuedUserKey, String.valueOf(userId))).willReturn(true);
 
 		// when
-		final boolean result = couponRedisCacheRepository.isAlreadyIssue(userId, couponId);
+		final boolean result = redisCouponPublishRepository.isAlreadyIssue(userId, couponId);
 
 		// then
 		assertThat(result).isTrue();
@@ -93,7 +93,7 @@ class CouponRedisCacheRepositoryUnitTest {
 			.willReturn(Boolean.TRUE);
 
 		// when
-		final boolean result = couponRedisCacheRepository.addCouponQueue(token);
+		final boolean result = redisCouponPublishRepository.addCouponQueue(token);
 
 		// then
 		assertThat(result).isTrue();
@@ -116,11 +116,11 @@ class CouponRedisCacheRepositoryUnitTest {
 		final Set<ZSetOperations.TypedTuple<String>> tupleSet = new HashSet<>();
 		tupleSet.add(tuple);
 
-		given(zSetOps.popMin(couponRedisCacheRepository.getCouponIssuedQueueKey(), count)).willReturn(tupleSet);
+		given(zSetOps.popMin(redisCouponPublishRepository.getCouponIssuedQueueKey(), count)).willReturn(tupleSet);
 		given(objectMapper.readValue(tokenJson, CouponIssueToken.class)).willReturn(token);
 
 		// when
-		final Set<CouponIssueToken> result = couponRedisCacheRepository.getCouponIssueTokens(count);
+		final Set<CouponIssueToken> result = redisCouponPublishRepository.getCouponIssueTokens(count);
 
 		// then
 		assertThat(result).hasSize(count)
@@ -132,11 +132,11 @@ class CouponRedisCacheRepositoryUnitTest {
 	void decreaseCouponCount() throws Exception {
 		// given
 		final long couponId = 1L;
-		final String couponKey = couponRedisCacheRepository.getCouponKeyFormat().formatted(couponId);
+		final String couponKey = redisCouponPublishRepository.getCouponKeyFormat().formatted(couponId);
 		given(redisTemplate.opsForValue()).willReturn(valueOps);
 
 		// when
-		couponRedisCacheRepository.decreaseCouponCount(couponId);
+		redisCouponPublishRepository.decreaseCouponCount(couponId);
 
 		// then
 		verify(valueOps).decrement(couponKey);
@@ -152,9 +152,9 @@ class CouponRedisCacheRepositoryUnitTest {
 		given(redisTemplate.opsForZSet()).willReturn(zSetOps);
 
 		// when
-		couponRedisCacheRepository.removeCouponIssueToken(token);
+		redisCouponPublishRepository.removeCouponIssueToken(token);
 
 		// then
-		verify(zSetOps).remove(couponRedisCacheRepository.getCouponIssuedQueueKey(), tokenJson);
+		verify(zSetOps).remove(redisCouponPublishRepository.getCouponIssuedQueueKey(), tokenJson);
 	}
 }

@@ -1,4 +1,4 @@
-package io.hhplus.ecommerce.coupon.presentation.resonse;
+package io.hhplus.ecommerce.coupon.presentation.api.resonse;
 
 import io.hhplus.ecommerce.coupon.application.response.CouponResponse;
 import io.swagger.v3.oas.annotations.media.Schema;

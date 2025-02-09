@@ -1,4 +1,4 @@
-package io.hhplus.ecommerce.coupon.scheduler;
+package io.hhplus.ecommerce.coupon.presentation.scheduler;
 
 import java.util.ArrayList;
 import java.util.List;

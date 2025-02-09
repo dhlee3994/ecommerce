@@ -1,4 +1,4 @@
-package io.hhplus.ecommerce.coupon.presentation.resonse;
+package io.hhplus.ecommerce.coupon.presentation.api.resonse;
 
 import java.time.LocalDateTime;
 

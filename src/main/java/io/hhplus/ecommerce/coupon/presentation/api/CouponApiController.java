@@ -1,4 +1,4 @@
-package io.hhplus.ecommerce.coupon.presentation;
+package io.hhplus.ecommerce.coupon.presentation.api;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.hhplus.ecommerce.coupon.application.CouponApplicationService;
-import io.hhplus.ecommerce.coupon.presentation.request.CouponIssueApiRequest;
-import io.hhplus.ecommerce.coupon.presentation.resonse.CouponApiResponse;
+import io.hhplus.ecommerce.coupon.presentation.api.request.CouponIssueApiRequest;
+import io.hhplus.ecommerce.coupon.presentation.api.resonse.CouponApiResponse;
 import io.hhplus.ecommerce.global.CommonApiResponse;
 import lombok.RequiredArgsConstructor;
 

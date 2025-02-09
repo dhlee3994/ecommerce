@@ -1,4 +1,4 @@
-package io.hhplus.ecommerce.coupon.presentation.request;
+package io.hhplus.ecommerce.coupon.presentation.api.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;

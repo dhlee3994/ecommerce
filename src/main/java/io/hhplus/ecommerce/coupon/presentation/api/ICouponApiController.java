@@ -1,4 +1,4 @@
-package io.hhplus.ecommerce.coupon.presentation;
+package io.hhplus.ecommerce.coupon.presentation.api;
 
 import static io.swagger.v3.oas.annotations.enums.ParameterIn.PATH;
 
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import io.hhplus.ecommerce.coupon.presentation.request.CouponIssueApiRequest;
-import io.hhplus.ecommerce.coupon.presentation.resonse.CouponApiResponse;
+import io.hhplus.ecommerce.coupon.presentation.api.request.CouponIssueApiRequest;
+import io.hhplus.ecommerce.coupon.presentation.api.resonse.CouponApiResponse;
 import io.hhplus.ecommerce.global.CommonApiResponse;
 import io.hhplus.ecommerce.global.openapi.ApiFailResponse;
 import io.hhplus.ecommerce.global.openapi.ApiSuccessResponse;

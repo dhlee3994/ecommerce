@@ -23,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import io.hhplus.ecommerce.coupon.domain.DiscountType;
 import io.hhplus.ecommerce.coupon.domain.IssuedCoupon;
@@ -33,10 +34,9 @@ import io.hhplus.ecommerce.order.domain.OrderRepository;
 import io.hhplus.ecommerce.order.domain.OrderStatus;
 import io.hhplus.ecommerce.payment.application.request.PaymentRequest;
 import io.hhplus.ecommerce.payment.application.response.PaymentResponse;
-import io.hhplus.ecommerce.payment.domain.DataPlatformClient;
-import io.hhplus.ecommerce.payment.domain.OrderData;
 import io.hhplus.ecommerce.payment.domain.PaymentAmountCalculator;
 import io.hhplus.ecommerce.payment.domain.PaymentRepository;
+import io.hhplus.ecommerce.payment.domain.event.PaymentCompletedEvent;
 import io.hhplus.ecommerce.point.domain.Point;
 import io.hhplus.ecommerce.point.domain.PointRepository;
 import io.hhplus.ecommerce.user.domain.UserRepository;
@@ -61,7 +61,7 @@ class PaymentApplicationServiceUnitTest {
 	@Mock
 	private PaymentAmountCalculator paymentAmountCalculator;
 	@Mock
-	private DataPlatformClient dataPlatformClient;
+	private ApplicationEventPublisher applicationEventPublisher;
 
 	@DisplayName("정액할인 쿠폰으로 결제하면 쿠폰에 명시된 할인양만큼 차감된 금액으로 결제한다.")
 	@Test
@@ -131,7 +131,7 @@ class PaymentApplicationServiceUnitTest {
 		then(paymentRepository).should(times(1)).save(argThat(payment ->
 			payment.getOrderId().equals(orderId) && payment.getAmount() == expectedPaymentAmount
 		));
-		then(dataPlatformClient).should(times(1)).sendOrderData(any(OrderData.class));
+		then(applicationEventPublisher).should(times(1)).publishEvent(any(PaymentCompletedEvent.class));
 	}
 
 	@DisplayName("정률할인 쿠폰으로 결제하면 쿠폰에 명시된 할인비율만큼 차감된 금액으로 결제한다.")
@@ -202,7 +202,7 @@ class PaymentApplicationServiceUnitTest {
 		then(paymentRepository).should(times(1)).save(argThat(payment ->
 			payment.getOrderId().equals(orderId) && payment.getAmount() == expectedPaymentAmount
 		));
-		then(dataPlatformClient).should(times(1)).sendOrderData(any(OrderData.class));
+		then(applicationEventPublisher).should(times(1)).publishEvent(any(PaymentCompletedEvent.class));
 	}
 
 	@DisplayName("쿠폰을 적용하지 않으면 주문 총 금액을 결제한다.")
@@ -260,7 +260,7 @@ class PaymentApplicationServiceUnitTest {
 		then(paymentRepository).should(times(1)).save(argThat(payment ->
 			payment.getOrderId().equals(orderId) && payment.getAmount() == expectedPaymentAmount)
 		);
-		then(dataPlatformClient).should(times(1)).sendOrderData(any(OrderData.class));
+		then(applicationEventPublisher).should(times(1)).publishEvent(any(PaymentCompletedEvent.class));
 	}
 
 	@DisplayName("보유 포인트가 최종 결제 금액보다 적으면 EcommerceException 예외가 발생한다.")
@@ -468,7 +468,7 @@ class PaymentApplicationServiceUnitTest {
 			.given(paymentAmountCalculator)
 			.calculatePaymentAmount(order, issuedCoupon);
 
-		// when &&
+		// when && then
 		assertThatThrownBy(() -> paymentApplicationService.pay(request))
 			.isInstanceOf(EcommerceException.class)
 			.hasMessage(COUPON_ALREADY_USED.getMessage());

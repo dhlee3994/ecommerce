@@ -7,6 +7,7 @@ import static io.hhplus.ecommerce.global.exception.ErrorCode.POINT_IS_NOT_ENOUGH
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -34,9 +35,8 @@ import io.hhplus.ecommerce.payment.application.request.PaymentRequest;
 import io.hhplus.ecommerce.payment.application.response.PaymentResponse;
 import io.hhplus.ecommerce.payment.domain.DataPlatformClient;
 import io.hhplus.ecommerce.payment.domain.OrderData;
-import io.hhplus.ecommerce.payment.domain.Payment;
+import io.hhplus.ecommerce.payment.domain.PaymentAmountCalculator;
 import io.hhplus.ecommerce.payment.domain.PaymentRepository;
-import io.hhplus.ecommerce.payment.domain.PaymentService;
 import io.hhplus.ecommerce.point.domain.Point;
 import io.hhplus.ecommerce.point.domain.PointRepository;
 import io.hhplus.ecommerce.user.domain.UserRepository;
@@ -59,7 +59,7 @@ class PaymentApplicationServiceUnitTest {
 	@Mock
 	private IssuedCouponRepository issuedCouponRepository;
 	@Mock
-	private PaymentService paymentService;
+	private PaymentAmountCalculator paymentAmountCalculator;
 	@Mock
 	private DataPlatformClient dataPlatformClient;
 
@@ -111,21 +111,14 @@ class PaymentApplicationServiceUnitTest {
 		final int expectedDiscountAmount = discountValue;
 		final int expectedPaymentAmount = orderAmount - expectedDiscountAmount;
 
+		given(paymentAmountCalculator.calculatePaymentAmount(order, issuedCoupon))
+			.willReturn(expectedPaymentAmount);
+
 		final PaymentRequest request = PaymentRequest.builder()
 			.orderId(orderId)
 			.userId(userId)
 			.couponId(couponId)
 			.build();
-
-		final Long paymentId = 1L;
-		final Payment payment = Payment.builder()
-			.orderId(orderId)
-			.amount(expectedPaymentAmount)
-			.build();
-
-		EntityIdSetter.setId(payment, paymentId);
-		given(paymentService.pay(order, point, issuedCoupon))
-			.willReturn(payment);
 
 		// when
 		final PaymentResponse result = paymentApplicationService.pay(request);
@@ -135,7 +128,9 @@ class PaymentApplicationServiceUnitTest {
 			.extracting("orderId", "paymentPrice")
 			.containsExactly(orderId, expectedPaymentAmount);
 
-		then(paymentRepository).should(times(1)).save(payment);
+		then(paymentRepository).should(times(1)).save(argThat(payment ->
+			payment.getOrderId().equals(orderId) && payment.getAmount() == expectedPaymentAmount
+		));
 		then(dataPlatformClient).should(times(1)).sendOrderData(any(OrderData.class));
 	}
 
@@ -187,21 +182,14 @@ class PaymentApplicationServiceUnitTest {
 		final int expectedDiscountAmount = (orderAmount * discountValue / 100);
 		final int expectedPaymentAmount = orderAmount - expectedDiscountAmount;
 
+		given(paymentAmountCalculator.calculatePaymentAmount(order, issuedCoupon))
+			.willReturn(expectedPaymentAmount);
+
 		final PaymentRequest request = PaymentRequest.builder()
 			.orderId(orderId)
 			.userId(userId)
 			.couponId(couponId)
 			.build();
-
-		final Long paymentId = 1L;
-		final Payment payment = Payment.builder()
-			.orderId(orderId)
-			.amount(expectedPaymentAmount)
-			.build();
-
-		EntityIdSetter.setId(payment, paymentId);
-		given(paymentService.pay(order, point, issuedCoupon))
-			.willReturn(payment);
 
 		// when
 		final PaymentResponse result = paymentApplicationService.pay(request);
@@ -211,7 +199,9 @@ class PaymentApplicationServiceUnitTest {
 			.extracting("orderId", "paymentPrice")
 			.containsExactly(orderId, expectedPaymentAmount);
 
-		then(paymentRepository).should(times(1)).save(payment);
+		then(paymentRepository).should(times(1)).save(argThat(payment ->
+			payment.getOrderId().equals(orderId) && payment.getAmount() == expectedPaymentAmount
+		));
 		then(dataPlatformClient).should(times(1)).sendOrderData(any(OrderData.class));
 	}
 
@@ -246,9 +236,11 @@ class PaymentApplicationServiceUnitTest {
 		given(orderRepository.findByIdForUpdate(order.getId()))
 			.willReturn(Optional.of(order));
 
-
 		final int expectedDiscountAmount = 0;
 		final int expectedPaymentAmount = orderAmount - expectedDiscountAmount;
+
+		given(paymentAmountCalculator.calculatePaymentAmount(eq(order), any(IssuedCoupon.class)))
+			.willReturn(expectedPaymentAmount);
 
 		final Long couponId = null;
 		final PaymentRequest request = PaymentRequest.builder()
@@ -256,16 +248,6 @@ class PaymentApplicationServiceUnitTest {
 			.userId(userId)
 			.couponId(couponId)
 			.build();
-
-		final Long paymentId = 1L;
-		final Payment payment = Payment.builder()
-			.orderId(orderId)
-			.amount(expectedPaymentAmount)
-			.build();
-
-		EntityIdSetter.setId(payment, paymentId);
-		given(paymentService.pay(eq(order), eq(point), any(IssuedCoupon.class)))
-			.willReturn(payment);
 
 		// when
 		final PaymentResponse result = paymentApplicationService.pay(request);
@@ -275,7 +257,9 @@ class PaymentApplicationServiceUnitTest {
 			.extracting("orderId", "paymentPrice")
 			.containsExactly(orderId, expectedPaymentAmount);
 
-		then(paymentRepository).should(times(1)).save(payment);
+		then(paymentRepository).should(times(1)).save(argThat(payment ->
+			payment.getOrderId().equals(orderId) && payment.getAmount() == expectedPaymentAmount)
+		);
 		then(dataPlatformClient).should(times(1)).sendOrderData(any(OrderData.class));
 	}
 
@@ -331,8 +315,8 @@ class PaymentApplicationServiceUnitTest {
 			.build();
 
 		willThrow(new EcommerceException(POINT_IS_NOT_ENOUGH))
-			.given(paymentService)
-			.pay(order, point, issuedCoupon);
+			.given(paymentAmountCalculator)
+			.calculatePaymentAmount(order, issuedCoupon);
 
 		// when &&
 		assertThatThrownBy(() -> paymentApplicationService.pay(request))
@@ -421,8 +405,8 @@ class PaymentApplicationServiceUnitTest {
 			.build();
 
 		willThrow(new EcommerceException(COUPON_IS_EXPIRED))
-			.given(paymentService)
-			.pay(order, point, issuedCoupon);
+			.given(paymentAmountCalculator)
+			.calculatePaymentAmount(order, issuedCoupon);
 
 		// when &&
 		assertThatThrownBy(() -> paymentApplicationService.pay(request))
@@ -481,8 +465,8 @@ class PaymentApplicationServiceUnitTest {
 			.build();
 
 		willThrow(new EcommerceException(COUPON_ALREADY_USED))
-			.given(paymentService)
-			.pay(order, point, issuedCoupon);
+			.given(paymentAmountCalculator)
+			.calculatePaymentAmount(order, issuedCoupon);
 
 		// when &&
 		assertThatThrownBy(() -> paymentApplicationService.pay(request))

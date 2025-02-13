@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import jakarta.persistence.EntityNotFoundException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +29,7 @@ import io.hhplus.ecommerce.product.application.response.BestProductResponse;
 import io.hhplus.ecommerce.product.application.response.ProductResponse;
 import io.hhplus.ecommerce.product.domain.BestProduct;
 import io.hhplus.ecommerce.product.domain.Product;
+import io.hhplus.ecommerce.product.domain.ProductCacheRepository;
 import io.hhplus.ecommerce.product.domain.ProductRepository;
 import io.hhplus.ecommerce.product.domain.spec.ProductSearchSpec;
 import io.hhplus.ecommerce.util.EntityIdSetter;
@@ -42,6 +42,8 @@ class ProductApplicationServiceUnitTest {
 
 	@Mock
 	private ProductRepository productRepository;
+	@Mock
+	private ProductCacheRepository productCacheRepository;
 
 	@DisplayName("상품 목록 조회")
 	@Nested
@@ -246,12 +248,12 @@ class ProductApplicationServiceUnitTest {
 				BestProduct.builder().productId(5L).name("상품5").totalSaleCount(50L).build()
 			);
 
-			given(productRepository.getBestProducts(
-				any(LocalDateTime.class),
-				any(LocalDateTime.class),
-				any(Pageable.class)
-			))
-				.willReturn(bestProducts);
+			final List<BestProductResponse> bestProductResponses = bestProducts.stream()
+				.map(BestProductResponse::from)
+				.toList();
+
+			given(productCacheRepository.getBestProducts())
+				.willReturn(bestProductResponses);
 
 			// when
 			final List<BestProductResponse> result = productApplicationService.getBestProducts();

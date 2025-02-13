@@ -6,6 +6,7 @@ import static io.hhplus.ecommerce.global.exception.ErrorCode.POINT_NOT_FOUND;
 import static io.hhplus.ecommerce.global.exception.ErrorCode.USER_NOT_FOUND;
 
 import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +20,8 @@ import io.hhplus.ecommerce.payment.application.response.PaymentResponse;
 import io.hhplus.ecommerce.payment.domain.DataPlatformClient;
 import io.hhplus.ecommerce.payment.domain.OrderData;
 import io.hhplus.ecommerce.payment.domain.Payment;
+import io.hhplus.ecommerce.payment.domain.PaymentAmountCalculator;
 import io.hhplus.ecommerce.payment.domain.PaymentRepository;
-import io.hhplus.ecommerce.payment.domain.PaymentService;
 import io.hhplus.ecommerce.point.domain.Point;
 import io.hhplus.ecommerce.point.domain.PointRepository;
 import io.hhplus.ecommerce.user.domain.UserRepository;
@@ -30,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class PaymentApplicationService {
 
-	private final PaymentService paymentService;
+	private final PaymentAmountCalculator paymentAmountCalculator;
 
 	private final PaymentRepository paymentRepository;
 
@@ -54,18 +55,25 @@ public class PaymentApplicationService {
 
 		order.validate();
 
-		// 비관적락
 		final IssuedCoupon issuedCoupon = request.getCouponId() == null
 			? IssuedCoupon.emptyCoupon()
 			: issuedCouponRepository.findByCouponIdAndUserIdForUpdate(request.getCouponId(), request.getUserId())
 			.orElseThrow(() -> new EntityNotFoundException(COUPON_NOT_FOUND.getMessage()));
 
-		// 비관적락
 		final Point point = pointRepository.findByUserIdForUpdate(request.getUserId())
 			.orElseThrow(() -> new EntityNotFoundException(POINT_NOT_FOUND.getMessage()));
 
-		final Payment payment = paymentService.pay(order, point, issuedCoupon);
+		final int paymentAmount = paymentAmountCalculator.calculatePaymentAmount(order, issuedCoupon);
+		Payment payment = Payment.builder()
+			.orderId(order.getId())
+			.amount(paymentAmount)
+			.build();
+
 		paymentRepository.save(payment);
+
+		issuedCoupon.use(order.getId(), LocalDateTime.now());
+		point.use(paymentAmount);
+		order.updatePaymentStatus();
 
 		dataPlatformClient.sendOrderData(OrderData.from(order));
 

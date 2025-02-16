@@ -8,6 +8,7 @@ import static io.hhplus.ecommerce.global.exception.ErrorCode.USER_NOT_FOUND;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,11 +18,10 @@ import io.hhplus.ecommerce.order.domain.Order;
 import io.hhplus.ecommerce.order.domain.OrderRepository;
 import io.hhplus.ecommerce.payment.application.request.PaymentRequest;
 import io.hhplus.ecommerce.payment.application.response.PaymentResponse;
-import io.hhplus.ecommerce.payment.domain.DataPlatformClient;
-import io.hhplus.ecommerce.payment.domain.OrderData;
 import io.hhplus.ecommerce.payment.domain.Payment;
 import io.hhplus.ecommerce.payment.domain.PaymentAmountCalculator;
 import io.hhplus.ecommerce.payment.domain.PaymentRepository;
+import io.hhplus.ecommerce.payment.domain.event.PaymentCompletedEvent;
 import io.hhplus.ecommerce.point.domain.Point;
 import io.hhplus.ecommerce.point.domain.PointRepository;
 import io.hhplus.ecommerce.user.domain.UserRepository;
@@ -42,7 +42,7 @@ public class PaymentApplicationService {
 
 	private final IssuedCouponRepository issuedCouponRepository;
 
-	private final DataPlatformClient dataPlatformClient;
+	private final ApplicationEventPublisher eventPublisher;
 
 	@Transactional
 	public PaymentResponse pay(final PaymentRequest request) {
@@ -75,7 +75,7 @@ public class PaymentApplicationService {
 		point.use(paymentAmount);
 		order.updatePaymentStatus();
 
-		dataPlatformClient.sendOrderData(OrderData.from(order));
+		eventPublisher.publishEvent(PaymentCompletedEvent.from(order));
 
 		return PaymentResponse.from(payment);
 	}

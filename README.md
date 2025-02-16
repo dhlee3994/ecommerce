@@ -9,3 +9,4 @@
 ## [동시성 문제 해결방법 분석](docs/concurrency-issue.md)
 ## [캐시](docs/cache.md)
 ## [인덱스](docs/index.md)
+## [트랜잭션 분리](docs/transaction.md)

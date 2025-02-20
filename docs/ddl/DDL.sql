@@ -100,3 +100,13 @@ CREATE TABLE issued_coupon (
     updated_at     TIMESTAMP(2)       NOT NULL DEFAULT CURRENT_TIMESTAMP(2),
     deleted_at     TIMESTAMP(2)
 ) COMMENT '발급된 쿠폰 테이블';
+
+create table payment_outbox (
+    id            BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    message_key   varchar(32)  NOT NULL,
+    message       text,
+    outbox_status varchar(20),
+    created_at    TIMESTAMP(2) NOT NULL DEFAULT CURRENT_TIMESTAMP(2),
+    published_at  TIMESTAMP(2),
+    retry_count   INT UNSIGNED
+)

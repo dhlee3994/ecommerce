@@ -9,6 +9,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.kafka.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import io.hhplus.ecommerce.util.DataCleaner;
@@ -20,6 +21,7 @@ public abstract class IntegrationTest {
 
 	private static final MySQLContainer<?> mysqlContainer;
 	private static final GenericContainer<?> redisContainer;
+	private static final KafkaContainer kafkaContainer;
 
 	static {
 		mysqlContainer = new MySQLContainer<>(DockerImageName.parse("mysql:8.4.3"))
@@ -34,8 +36,11 @@ public abstract class IntegrationTest {
 			.withExposedPorts(6379)
 			.withReuse(true);
 
+		kafkaContainer = new KafkaContainer("apache/kafka-native:3.8.0");
+
 		mysqlContainer.start();
 		redisContainer.start();
+		kafkaContainer.start();
 	}
 
 	@DynamicPropertySource
@@ -46,6 +51,8 @@ public abstract class IntegrationTest {
 
 		registry.add("spring.data.redis.host", redisContainer::getHost);
 		registry.add("spring.data.redis.port", redisContainer::getFirstMappedPort);
+
+		registry.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers);
 	}
 
 	@Autowired

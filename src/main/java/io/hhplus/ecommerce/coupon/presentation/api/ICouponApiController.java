@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import io.hhplus.ecommerce.coupon.application.response.IssuedCouponResponse;
 import io.hhplus.ecommerce.coupon.presentation.api.request.CouponIssueApiRequest;
 import io.hhplus.ecommerce.coupon.presentation.api.resonse.CouponApiResponse;
 import io.hhplus.ecommerce.global.CommonApiResponse;
@@ -44,5 +45,5 @@ public interface ICouponApiController {
 		)
 	)
 	@PostMapping("/issue")
-	void issueCoupon(@RequestBody CouponIssueApiRequest issueRequest);
+	CommonApiResponse<IssuedCouponResponse> issueCoupon(@RequestBody CouponIssueApiRequest issueRequest);
 }

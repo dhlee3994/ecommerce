@@ -10,3 +10,4 @@
 ## [캐시](docs/cache.md)
 ## [인덱스](docs/index.md)
 ## [트랜잭션 분리](docs/transaction.md)
+## [부하테스트](docs/load-test.md)
